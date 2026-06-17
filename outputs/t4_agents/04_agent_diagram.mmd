@@ -1,0 +1,21 @@
+flowchart TD
+    A[Entrada de dados
+Transactions + KYC + Merchants + GeoBehavior] --> B[Agente 1: Dados
+Ingesta, qualidade, coerência por rail]
+    B --> C[Agente 2: Detecção
+Regras AML + score ML + fila priorizada]
+    C --> D[Agente 3: Investigação
+Entidade 360, timeline, deduplicação]
+    D --> E[Agente 4: Reporte
+SAR estruturado]
+    E --> F[Agente 5: Compliance
+BACEN, COAF, FATF, sanções, auditoria]
+    F --> G[Saída
+Caso priorizado + SAR + trilha auditável]
+
+    C -. usa .-> R[Motor de regras
+T2]
+    C -. usa .-> M[Modelo ML
+T3]
+    D -. consulta .-> S[Suspeitos e timeline
+T1]

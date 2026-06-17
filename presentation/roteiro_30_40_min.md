@@ -163,3 +163,43 @@ Depois abrir:
 ### Frase curta de fechamento da T3
 
 “O ML entra como uma camada de priorização em cima de uma base explicável de regras. Ele ajuda o time a focar primeiro nos casos com maior combinação de risco.”
+
+---
+
+## Bloco adicional — T4 Multi-Agente LLM
+
+Tempo sugerido: 5 a 7 minutos.
+
+### Como introduzir
+
+“Depois das regras e do modelo de ML, eu desenhei uma camada multi-agente para apoiar a operação AML de ponta a ponta.”
+
+### O que mostrar no repo
+
+Abrir a pasta:
+
+`outputs/t4_agents/`
+
+Mostrar primeiro:
+
+`README.md`
+
+Depois mostrar:
+
+`04_agent_diagram.mmd`
+
+Depois abrir:
+
+`src/agents.py`
+
+### Fala principal
+
+“Esse fluxo tem cinco agentes. O primeiro valida dados e coerência por rail. O segundo combina regras e ML para priorizar alertas. O terceiro investiga a entidade com timeline e deduplicação. O quarto monta o SAR. O quinto revisa compliance, sanções, BACEN, COAF, FATF e trilha de auditoria.”
+
+### Ponto que preciso reforçar
+
+“O LLM não toma decisão sozinho. Ele atua como apoio operacional para organizar evidências, padronizar investigação e reduzir esforço manual. A decisão continua revisável por analista e compliance.”
+
+### Frase curta de fechamento da T4
+
+“O multi-agente conecta tudo que foi construído antes: EDA, regras, suspeitos, SAR e ML em uma esteira AML auditável.”

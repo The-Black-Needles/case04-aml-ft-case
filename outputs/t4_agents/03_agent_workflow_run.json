@@ -1,0 +1,27 @@
+[
+  {
+    "agent_name": "Agente 1 — Dados",
+    "objective": "Validar qualidade, ingesta e coerência por rail",
+    "output": "Contexto de dados confiável"
+  },
+  {
+    "agent_name": "Agente 2 — Detecção",
+    "objective": "Combinar regras e ML para priorizar alertas",
+    "output": "Fila priorizada"
+  },
+  {
+    "agent_name": "Agente 3 — Investigação",
+    "objective": "Montar entidade 360 e timeline",
+    "output": "Narrativa investigativa"
+  },
+  {
+    "agent_name": "Agente 4 — Reporte",
+    "objective": "Gerar SAR estruturado",
+    "output": "SAR draft"
+  },
+  {
+    "agent_name": "Agente 5 — Compliance",
+    "objective": "Revisar aderência regulatória e auditoria",
+    "output": "Parecer e ações"
+  }
+]

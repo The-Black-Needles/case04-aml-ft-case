@@ -1,0 +1,6 @@
+agent,role,input,output,human_review
+Dados,Validação e enriquecimento,Base bruta e dicionário,Contexto validado por rail,Sim
+Detecção,Regras + ML,"Contexto validado, regras, scores",Fila priorizada,Sim
+Investigação,Entidade 360 e timeline,Fila priorizada e evidências,Narrativa investigativa,Sim
+Reporte,SAR estruturado,Narrativa investigativa,SAR draft,Sim
+Compliance,Revisão regulatória e auditoria,SAR draft e evidências,Parecer final,Sim
