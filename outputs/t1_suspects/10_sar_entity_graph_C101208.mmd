@@ -1,0 +1,35 @@
+flowchart LR
+  C["Cliente C101208<br/>Customer 1209<br/>34 tx / R$ 162.018"]:::critical
+  KYC["KYC: Low / L1<br/>não PEP / sem sanção cadastral"]:::context
+  INC["Renda anual declarada<br/>R$ 13.047"]:::critical
+  PIX["PIX<br/>17 tx"]:::rail
+  CARD["Card<br/>14 tx"]:::rail
+  WIRE["Wire<br/>3 tx"]:::rail
+  SY["SY<br/>High risk<br/>sanctions hit"]:::critical
+  RU["RU<br/>2 tx<br/>monitored"]:::high
+  XB["Cross-border<br/>9 tx"]:::high
+  MCC["MCC / merchants de risco<br/>6011, 7995, 4829, 6051"]:::high
+  PASS["Cash-in→cash-out proxy<br/>regra mensal"]:::high
+  OUT["Fora de perfil<br/>volume x renda"]:::critical
+  SAR["SAR draft<br/>timeline + evidências"]:::critical
+
+  C --> KYC
+  C --> INC
+  C --> PIX
+  C --> CARD
+  C --> WIRE
+  C --> XB
+  XB --> SY
+  XB --> RU
+  C --> MCC
+  C --> PASS
+  C --> OUT
+  SY --> SAR
+  MCC --> SAR
+  OUT --> SAR
+  PASS --> SAR
+
+  classDef critical fill:#8b1a1a,stroke:#ff7777,color:#ffffff,stroke-width:2px;
+  classDef high fill:#6b4e16,stroke:#ffd166,color:#ffffff,stroke-width:1.5px;
+  classDef rail fill:#183b5b,stroke:#7cc7ff,color:#ffffff,stroke-width:1.5px;
+  classDef context fill:#2d3748,stroke:#a0aec0,color:#ffffff,stroke-width:1px;

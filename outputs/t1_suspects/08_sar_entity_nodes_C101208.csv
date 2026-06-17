@@ -1,0 +1,68 @@
+node_id,label,node_type,risk_level,notes
+CLIENT,"C101208
+Customer 1209",cliente,crítico,"R$ 162.018,32 em 34 tx; renda anual R$ 13.047,00"
+KYC,"KYC
+Low / L1 / não PEP",perfil,atenção,Ocupação=Chef; score KYC=51.0
+INCOME,"Renda declarada
+R$ 13.047/ano",perfil,crítico,Movimentação no período supera substancialmente a renda anual declarada
+RAIL_PIX,"PIX
+17 tx",rail,contexto,"R$ 87.082,83"
+RAIL_CARD,"Card
+14 tx",rail,contexto,"R$ 53.491,11"
+RAIL_WIRE,"Wire
+3 tx",rail,contexto,"R$ 21.444,38"
+COUNTRY_BY,"BY
+1 tx",país/geo,alto,"Risco receiver=Monitored; R$ 3.017,79"
+COUNTRY_ES,"ES
+1 tx",país/geo,contexto,"Risco receiver=Low; R$ 1.113,88"
+COUNTRY_GB,"GB
+1 tx",país/geo,contexto,"Risco receiver=Low; R$ 2.234,10"
+COUNTRY_PT,"PT
+2 tx",país/geo,contexto,"Risco receiver=Low; R$ 18.285,16"
+COUNTRY_RU,"RU
+2 tx",país/geo,alto,"Risco receiver=Monitored; R$ 8.807,70"
+COUNTRY_SY,"SY
+1 tx",país/geo,crítico,"Risco receiver=High; R$ 2.166,18"
+COUNTRY_YE,"YE
+1 tx",país/geo,alto,"Risco receiver=Monitored; R$ 6.889,49"
+ALERT_SANCTIONS,"Sanctions screening
+1 hit",alerta,crítico,Hit transacional em wire para país de alto risco
+ALERT_OUT_PROFILE,"Fora de perfil
+mensal",alerta,crítico,M01_monthly_out_of_profile_dynamic
+ALERT_PASS_THROUGH,"Cash-in→cash-out
+proxy",alerta,alto,M04_cashin_to_cashout_pass_through_proxy
+ALERT_CROSS_BORDER,"Concentração
+cross-border",alerta,alto,M05_crossborder_concentration
+ALERT_SANCTIONS_PERIOD,Sanções no período,alerta,crítico,M07_sanctions_any_period
+ALERT_MCC,"MCC alto risco
+repetido",alerta,alto,M09_high_risk_mcc_repeated
+MERCHANT_RISK_GROUP,"Merchants de risco
+MCC/chargeback",merchant,alto,14 merchants com MCC/flag/chargeback de risco
+MERCHANT_M200637,"M200637
+MCC 7995",merchant,alto,Merchant 638; país=BR; cb90d=0.079
+MERCHANT_M200331,"M200331
+MCC 6011",merchant,alto,Merchant 332; país=RU; cb90d=0.086
+MERCHANT_M200212,"M200212
+MCC 7995",merchant,alto,Merchant 213; país=YE; cb90d=0.067
+MERCHANT_M200127,"M200127
+MCC 6011",merchant,alto,Merchant 128; país=BR; cb90d=0.052
+MERCHANT_M200702,"M200702
+MCC 4829",merchant,alto,Merchant 703; país=BR; cb90d=0.146
+MERCHANT_M200878,"M200878
+MCC 5945",merchant,atenção,Merchant 879; país=BR; cb90d=0.172
+MERCHANT_M200426,"M200426
+MCC 6051",merchant,alto,Merchant 427; país=BR; cb90d=0.164
+MERCHANT_M200059,"M200059
+MCC 6051",merchant,alto,Merchant 60; país=BR; cb90d=0.2
+MERCHANT_M200538,"M200538
+MCC 6011",merchant,alto,Merchant 539; país=BR; cb90d=0.129
+MERCHANT_M200958,"M200958
+MCC 5812",merchant,atenção,Merchant 959; país=BR; cb90d=0.154
+TX_TNHZDN7D6LYK6,"TNHZDN7D6LYK6
+Wire R$ 2.166",transação,crítico,2025-08-12 03:37:39 | receiver=SY | sanctions=Yes
+TX_TIQS2U9KT1J0U,"TIQS2U9KT1J0U
+Card R$ 14.012",transação,alto,2025-09-23 10:09:41 | receiver=BR | sanctions=No
+TX_TF9EJQVFQTQJM,"TF9EJQVFQTQJM
+PI. R$ 7.719",transação,alto,2025-09-23 23:17:39 | receiver=RU | sanctions=No
+TX_TVC0AUP1WJ7DN,"TVC0AUP1WJ7DN
+Card R$ 6.500",transação,alto,2025-08-21 18:33:38 | receiver=BR | sanctions=No

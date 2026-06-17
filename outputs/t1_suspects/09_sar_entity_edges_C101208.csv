@@ -1,0 +1,49 @@
+source,target,relation,weight,evidence,risk_note
+CLIENT,KYC,perfil cadastral,1,KYC_Profiles,"Perfil formal baixo, mas comportamento operacional crítico"
+CLIENT,INCOME,incompatibilidade valor x renda,5,"Total R$ 162.018,32",Fora de perfil
+CLIENT,RAIL_PIX,usa rail,17,17 transações,Distribuição por rail
+CLIENT,RAIL_CARD,usa rail,14,14 transações,Distribuição por rail
+CLIENT,RAIL_WIRE,usa rail,3,3 transações,Distribuição por rail
+CLIENT,COUNTRY_BY,cross-border / receiver country,1,"1 tx; R$ 3.017,79",Risco país=Monitored
+CLIENT,COUNTRY_ES,cross-border / receiver country,1,"1 tx; R$ 1.113,88",Risco país=Low
+CLIENT,COUNTRY_GB,cross-border / receiver country,1,"1 tx; R$ 2.234,10",Risco país=Low
+CLIENT,COUNTRY_PT,cross-border / receiver country,2,"2 tx; R$ 18.285,16",Risco país=Low
+CLIENT,COUNTRY_RU,cross-border / receiver country,2,"2 tx; R$ 8.807,70",Risco país=Monitored
+CLIENT,COUNTRY_SY,cross-border / receiver country,1,"1 tx; R$ 2.166,18",Risco país=High
+CLIENT,COUNTRY_YE,cross-border / receiver country,1,"1 tx; R$ 6.889,49",Risco país=Monitored
+CLIENT,ALERT_SANCTIONS,disparou alerta,5,TNHZDN7D6LYK6,"SY / R$ 2.166,18"
+ALERT_SANCTIONS,COUNTRY_SY,evidência país,5,TNHZDN7D6LYK6,Sanções + país de alto risco
+CLIENT,ALERT_OUT_PROFILE,regra mensal,4,2025-08 | score 187.0,M01_monthly_out_of_profile_dynamic
+CLIENT,ALERT_PASS_THROUGH,regra mensal,4,2025-08 | score 187.0,M04_cashin_to_cashout_pass_through_proxy
+CLIENT,ALERT_CROSS_BORDER,regra mensal,4,2025-08 | score 187.0,M05_crossborder_concentration
+CLIENT,ALERT_SANCTIONS_PERIOD,regra mensal,4,2025-08 | score 187.0,M07_sanctions_any_period
+CLIENT,ALERT_OUT_PROFILE,regra mensal,2,2025-09 | score 55.0,M01_monthly_out_of_profile_dynamic
+CLIENT,ALERT_MCC,regra mensal,2,2025-09 | score 55.0,M09_high_risk_mcc_repeated
+CLIENT,ALERT_OUT_PROFILE,regra mensal,1,2025-07 | score 35.0,M01_monthly_out_of_profile_dynamic
+CLIENT,MERCHANT_RISK_GROUP,interage com grupo merchant,10,14 merchants de risco,MCC risco/chargeback/flag
+MERCHANT_RISK_GROUP,MERCHANT_M200637,exemplo merchant,1,"R$ 14.011,86",mcc_risk=High; flag=No
+CLIENT,MERCHANT_M200637,transaciona com merchant,1,"1 tx; R$ 14.011,86",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200331,exemplo merchant,1,"R$ 7.718,63",mcc_risk=High; flag=Yes
+CLIENT,MERCHANT_M200331,transaciona com merchant,1,"1 tx; R$ 7.718,63",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200212,exemplo merchant,1,"R$ 6.889,49",mcc_risk=High; flag=No
+CLIENT,MERCHANT_M200212,transaciona com merchant,1,"1 tx; R$ 6.889,49",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200127,exemplo merchant,1,"R$ 6.500,50",mcc_risk=High; flag=No
+CLIENT,MERCHANT_M200127,transaciona com merchant,1,"1 tx; R$ 6.500,50",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200702,exemplo merchant,1,"R$ 3.351,21",mcc_risk=High; flag=Yes
+CLIENT,MERCHANT_M200702,transaciona com merchant,1,"1 tx; R$ 3.351,21",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200878,exemplo merchant,1,"R$ 3.103,75",mcc_risk=Normal; flag=No
+CLIENT,MERCHANT_M200878,transaciona com merchant,1,"1 tx; R$ 3.103,75",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200426,exemplo merchant,1,"R$ 2.880,87",mcc_risk=High; flag=Yes
+CLIENT,MERCHANT_M200426,transaciona com merchant,1,"1 tx; R$ 2.880,87",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200059,exemplo merchant,1,"R$ 2.828,01",mcc_risk=High; flag=Yes
+CLIENT,MERCHANT_M200059,transaciona com merchant,1,"1 tx; R$ 2.828,01",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200538,exemplo merchant,1,"R$ 2.091,73",mcc_risk=High; flag=No
+CLIENT,MERCHANT_M200538,transaciona com merchant,1,"1 tx; R$ 2.091,73",merchant/MCC de risco
+MERCHANT_RISK_GROUP,MERCHANT_M200958,exemplo merchant,1,"R$ 1.812,58",mcc_risk=Normal; flag=No
+CLIENT,MERCHANT_M200958,transaciona com merchant,1,"1 tx; R$ 1.812,58",merchant/MCC de risco
+CLIENT,TX_TNHZDN7D6LYK6,transação evidência,3,2025-08-12 03:37:39,receiver_country=SY
+TX_TNHZDN7D6LYK6,COUNTRY_SY,destino/geo,2,TNHZDN7D6LYK6,cross-border
+CLIENT,TX_TIQS2U9KT1J0U,transação evidência,3,2025-09-23 10:09:41,receiver_country=BR
+CLIENT,TX_TF9EJQVFQTQJM,transação evidência,3,2025-09-23 23:17:39,receiver_country=RU
+TX_TF9EJQVFQTQJM,COUNTRY_RU,destino/geo,2,TF9EJQVFQTQJM,cross-border
+CLIENT,TX_TVC0AUP1WJ7DN,transação evidência,3,2025-08-21 18:33:38,receiver_country=BR

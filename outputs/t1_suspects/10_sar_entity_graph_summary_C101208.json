@@ -1,0 +1,66 @@
+{
+  "client_id": "C101208",
+  "full_name": "Customer 1209",
+  "annual_income_brl": 13047.0,
+  "declared_occupation": "Chef",
+  "risk_rating": "Low",
+  "pep": "No",
+  "kyc_tier": "L1",
+  "kyc_risk_score": 51.0,
+  "period_start": "2025-07-03 17:46:13",
+  "period_end": "2025-10-02 19:58:36",
+  "tx_count": 34,
+  "total_amount_brl": 162018.32,
+  "rail_counts": {
+    "PIX": 17,
+    "Card": 14,
+    "Wire": 3
+  },
+  "cross_border_count": 9,
+  "sanctions_screening_hit_count": 1,
+  "receiver_countries": {
+    "BR": 25,
+    "RU": 2,
+    "PT": 2,
+    "GB": 1,
+    "BY": 1,
+    "ES": 1,
+    "SY": 1,
+    "YE": 1
+  },
+  "country_risk_receiver": {
+    "Low": 29,
+    "Monitored": 4,
+    "High": 1
+  },
+  "merchant_count": 27,
+  "high_risk_mcc_merchants": 10,
+  "high_risk_flag_merchants": 5,
+  "max_single_tx_brl": 34398.52,
+  "monthly_rules": [
+    {
+      "month": "2025-08",
+      "month_rule_count": 4,
+      "month_rule_score": 187.0,
+      "month_rules_triggered": "M01_monthly_out_of_profile_dynamic; M04_cashin_to_cashout_pass_through_proxy; M05_crossborder_concentration; M07_sanctions_any_period"
+    },
+    {
+      "month": "2025-09",
+      "month_rule_count": 2,
+      "month_rule_score": 55.0,
+      "month_rules_triggered": "M01_monthly_out_of_profile_dynamic; M09_high_risk_mcc_repeated"
+    },
+    {
+      "month": "2025-07",
+      "month_rule_count": 1,
+      "month_rule_score": 35.0,
+      "month_rules_triggered": "M01_monthly_out_of_profile_dynamic"
+    },
+    {
+      "month": "2025-10",
+      "month_rule_count": 0,
+      "month_rule_score": 0.0,
+      "month_rules_triggered": NaN
+    }
+  ]
+}
