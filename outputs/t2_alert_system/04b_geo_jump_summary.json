@@ -1,0 +1,14 @@
+{
+  "transactions_read": 52000,
+  "valid_customer_geo_transactions": 46760,
+  "customers_with_geo": 2500,
+  "literal_geo_jump_candidates_12h_500km": 4247,
+  "unique_customers_literal_geo_jump": 1997,
+  "priority_geo_jump_candidates": 1942,
+  "unique_customers_priority_geo_jump": 1304,
+  "top_distance_km": 19172.7,
+  "top_customer_id": "C100392",
+  "criteria_literal": "consecutive customer transactions with distance >= 500 km and time <= 12h",
+  "criteria_priority": "literal geo-jump plus severity Alta/Média-Alta and at least two contextual risk flags or distance >= 2000 km",
+  "analytical_note": "In this synthetic dataset, geo coordinates generate many literal geo-jumps. The rule should be used as a contextual alert, not as standalone blocking decision."
+}

@@ -254,3 +254,14 @@ Abaixo estão exemplos reais da base para explicar o funcionamento das regras. A
 - **Exemplo:** cliente C100300 / mês 2025-07 | total=R$ 86.567,52 | tx_count=16 | cash_in=1 (R$ 2.000,19) | cash_out=15 (R$ 84.567,33) | cross_border=1 | high_risk_country=0 | regras=M01_monthly_out_of_profile_dynamic; M02_velocity_high_volume; M09_high_risk_mcc_repeated; M12_self_merchant_any
 - **Por que importa:** Indício forte de possível circularidade ou venda simulada, especialmente quando combinado com alto valor ou chargeback.
 
+
+
+## R17 — Geo-salto físico improvável
+
+**Lógica:** transações consecutivas do mesmo cliente com distância geográfica >= 500 km em intervalo <= 12h.
+
+**Parâmetros:** distância >= 500 km; intervalo <= 12h; priorização quando houver país de risco, IP anomaly, proxy/VPN/Tor, device rooted, cross-border ou distância extrema.
+
+**Exemplo na base:** `T8DGGXAWXFEVX -> THL18899DG0S9` para o cliente `C100392`. Intervalo de 1.177h, distância de 19172.7 km e velocidade implícita de 16290.2 km/h. Flags contextuais: `proxy_vpn_tor;cross_border;geo_country_change`.
+
+**Justificativa:** geo-saltos fisicamente improváveis podem indicar uso indevido de credenciais, device/IP mascarado, atuação de terceiros ou conta operada por múltiplas localidades. Na base sintética, a regra deve ser usada como alerta contextual, não como bloqueio automático isolado.
