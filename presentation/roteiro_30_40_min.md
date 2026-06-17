@@ -89,3 +89,40 @@ Ponto principal:
 ## Frase final
 
 “O valor do case está em transformar dados brutos em uma fila AML auditável, priorizada e defensável para investigação.”
+
+---
+
+## Bloco adicional — T2 Sistema de Alertas
+
+Tempo sugerido: 5 a 7 minutos.
+
+### Como introduzir
+
+“Depois de fazer a EDA e identificar os primeiros sinais AML, eu transformei esses sinais em um sistema de alertas. A ideia foi criar regras explicáveis, com parâmetros claros e exemplos reais na base.”
+
+### O que mostrar no repo
+
+Abrir a pasta:
+
+`outputs/t2_alert_system/`
+
+Mostrar primeiro:
+
+`00_T2_alert_system_summary.md`
+
+Depois abrir:
+
+`01_alert_rules_catalog_t2.csv`
+
+### Fala principal
+
+“Na T2 eu formalizei o motor de alertas. Primeiro eu peguei os sinais que apareceram na EDA e transformei em regras objetivas. Depois separei as regras em transacionais e comportamentais por cliente-mês. Cada regra tem lógica, parâmetro, severidade, tipologia AML, exemplo na base e ação operacional sugerida. A prioridade não vem de um alerta isolado, mas da combinação de sinais.”
+
+### Ponto que preciso reforçar
+
+“Eu escolhi começar por regras antes do ML porque AML precisa de explicabilidade. Um alerta precisa ser auditável. O analista precisa conseguir explicar por que aquele cliente ou transação entrou na fila.”
+
+### Frase curta de fechamento da T2
+
+“O motor de alertas é a ponte entre a EDA e o ML: ele transforma sinais em decisões auditáveis e também gera o label fraco que será usado na modelagem.”
+
