@@ -1,0 +1,2 @@
+model,train_period,validation_period,train_rows,validation_rows,train_positive,validation_positive,positive_rate_train,positive_rate_validation,auc_pr,auc_roc,selected_threshold,precision,recall,fpr,mcc,tp,fp,tn,fn,scale_pos_weight,random_state
+XGBoost PF customer-month,2025-07 to 2025-08,2025-09 to 2025-10,4998,4109,422,189,0.08443377350940376,0.04599659284497445,0.9416222958162495,0.9969522729726811,0.9,0.9240506329113924,0.7724867724867724,0.003061224489795918,0.8382208895200991,146,12,3908,43,10.843601895734597,42

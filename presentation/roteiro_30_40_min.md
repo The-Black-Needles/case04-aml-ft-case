@@ -126,3 +126,40 @@ Depois abrir:
 
 “O motor de alertas é a ponte entre a EDA e o ML: ele transforma sinais em decisões auditáveis e também gera o label fraco que será usado na modelagem.”
 
+
+
+---
+
+## Bloco adicional — T3 Modelo de ML
+
+Tempo sugerido: 6 a 8 minutos.
+
+### Como introduzir
+
+“Depois de criar as regras, eu usei essas regras para construir um label fraco e treinar um modelo de priorização.”
+
+### O que mostrar no repo
+
+Abrir a pasta:
+
+`outputs/t3_ml/`
+
+Mostrar primeiro:
+
+`README.md`
+
+Depois abrir:
+
+`03_metrics_summary.csv`, `04_threshold_metrics.csv`, `06_shap_top_features.csv` e `07_validation_scored_top30.csv`.
+
+### Fala principal
+
+“Na T3 eu não tratei o ML como uma caixa mágica. Primeiro criei regras explicáveis. Depois usei a regra de três ou mais alertas para criar o label fraco. Com isso, montei uma base cliente-mês e treinei um XGBoost para PF.”
+
+### Ponto que preciso reforçar
+
+“O split foi temporal: treino nos meses antigos e validação nos meses recentes. Isso é mais realista do que um split aleatório, porque em produção eu quero prever o que vem depois, não embaralhar passado e futuro.”
+
+### Frase curta de fechamento da T3
+
+“O ML entra como uma camada de priorização em cima de uma base explicável de regras. Ele ajuda o time a focar primeiro nos casos com maior combinação de risco.”
