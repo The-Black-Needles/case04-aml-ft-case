@@ -1,0 +1,29 @@
+tipologia,nivel,qtd_regras,acionamentos
+MCC risco / merchant risk,transacao,1,15696
+merchant risk / fraude adquirência,transacao,1,13784
+fora de perfil / renda incompatível,cliente_mes,1,5673
+fora de perfil / renda incompatível,transacao,1,4881
+device/IP risk / geo-salto,transacao,1,3839
+conta de passagem / mule account / layering,cliente_mes,1,2231
+device risk / fraude digital,transacao,1,1562
+fraude cartão / merchant risk,transacao,1,1070
+fraude cartão / e-commerce sem autenticação forte,transacao,1,1054
+structuring / smurfing proxy,transacao,1,988
+cross-border / layering,cliente_mes,1,814
+geo-salto / geografia de risco,transacao,1,782
+cross-border / país de risco,transacao,1,515
+PEP / corrupção / layering,transacao,1,455
+MCC risco / merchant risk,cliente_mes,1,411
+sanções / KYC,transacao,1,184
+device/IP ring / geo-salto,cliente_mes,1,139
+alto valor / possível comunicação objetiva se espécie,transacao,1,90
+fraude cartão / e-commerce sem autenticação,cliente_mes,1,78
+velocity / conta de passagem,cliente_mes,1,66
+PEP / corrupção / EDD,cliente_mes,1,48
+sanções / FT,cliente_mes,1,36
+cross-border / país de risco / FT,transacao,1,27
+país de risco / FT / sanctions proximity,cliente_mes,1,18
+structuring / smurfing,cliente_mes,1,4
+self-merchant / circularidade,cliente_mes,1,3
+self-merchant / vendas simuladas / circularidade,transacao,1,3
+sanções / FT / cross-border,transacao,1,2
