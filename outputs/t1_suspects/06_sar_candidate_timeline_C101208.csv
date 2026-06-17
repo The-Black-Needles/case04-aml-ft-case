@@ -1,0 +1,35 @@
+transaction_id,timestamp,transaction_type,status,amount_brl,sender_id,receiver_id,sender_entity_type,receiver_entity_type,merchant_id,receiver_country,country_risk_receiver,cross_border,sanctions_screening_hit,tx_rule_score,tx_rules_triggered
+T4DEL3OGZ9T5U,2025-07-03 17:46:13,PIX,Confirmed,3443.62,C101208,C100961,customer,customer,,BR,Low,No,No,0.0,
+TRLSHBGRSQGA1,2025-07-03 19:35:37,PIX,Confirmed,2828.01,C101208,M200059,customer,merchant,M200059,BR,Low,No,No,35.0,R10_high_risk_mcc; R11_high_risk_merchant_or_cb_ratio
+TKDIFNLZF949G,2025-07-09 09:23:58,Card,Confirmed,4116.51,C101208,M200140,customer,merchant,M200140,BR,Low,No,No,0.0,
+TW4RA60BNABEV,2025-07-12 00:23:42,Card,Confirmed,1235.91,C101260,C101208,customer,customer,,BR,Low,No,No,0.0,
+T5X9879GFHB16,2025-07-21 07:25:58,Card,Confirmed,830.85,C101208,M200251,customer,merchant,M200251,BR,Low,No,No,15.0,R10_high_risk_mcc
+TJZRYWR88WZHJ,2025-07-22 03:28:49,PIX,Confirmed,1241.06,C101208,M200526,customer,merchant,M200526,PT,Low,Yes,No,32.0,R11_high_risk_merchant_or_cb_ratio; R13_ip_anomaly_or_proxy_tor_vpn
+T2HVRIF1K4PMW,2025-07-24 11:50:53,PIX,Confirmed,34398.52,C101208,C100171,customer,customer,,BR,Low,No,No,18.0,R16_low_income_high_single_tx
+TJ9J37IHY7V35,2025-07-27 08:56:53,PIX,Confirmed,639.48,C101208,M200980,customer,merchant,M200980,BR,Low,No,No,0.0,
+T2Y9XYZ98FADL,2025-08-02 03:25:34,Card,Confirmed,3017.79,C101208,M200103,customer,merchant,M200103,BY,Monitored,Yes,No,20.0,R11_high_risk_merchant_or_cb_ratio
+TGCSN3TSADMDW,2025-08-05 20:27:45,PIX,Confirmed,3351.21,C101208,M200702,customer,merchant,M200702,BR,Low,No,No,35.0,R10_high_risk_mcc; R11_high_risk_merchant_or_cb_ratio
+TR1K3PDMT9A1T,2025-08-09 22:07:21,PIX,Confirmed,2880.87,C101208,M200426,customer,merchant,M200426,BR,Low,No,No,35.0,R10_high_risk_mcc; R11_high_risk_merchant_or_cb_ratio
+TCSL8IBUBEMM5,2025-08-10 15:58:46,PIX,Confirmed,5577.94,C102408,C101208,customer,customer,,BR,Low,No,No,0.0,
+TNHZDN7D6LYK6,2025-08-12 03:37:39,Wire,Confirmed,2166.18,C101208,M200815,customer,merchant,M200815,SY,High,Yes,Yes,210.0,R01_tx_sanctions_screening_hit; R04_wire_to_high_risk_country; R05_crossborder_high_risk_receiver; R06_geo_or_ip_high_risk
+TTY9XRY0X3DFN,2025-08-18 17:57:41,Wire,Confirmed,2234.1,C101208,M200524,customer,merchant,M200524,GB,Low,Yes,No,0.0,
+T10NY3BGEPEOK,2025-08-18 19:35:46,PIX,Confirmed,1094.47,C102220,C101208,customer,customer,,BR,Low,No,No,0.0,
+TFLDZY8SGLZXH,2025-08-19 05:15:24,PIX,Confirmed,1113.88,C101208,M200800,customer,merchant,M200800,ES,Low,Yes,No,0.0,
+TVC0AUP1WJ7DN,2025-08-21 18:33:38,Card,Confirmed,6500.5,C101208,M200127,customer,merchant,M200127,BR,Low,No,No,33.0,R08_card_ecommerce_without_3ds; R10_high_risk_mcc
+TA71FJSV7IE3Z,2025-08-26 07:12:01,PIX,Confirmed,3399.1,C101208,M200339,customer,merchant,M200339,BR,Low,No,No,0.0,
+TQSBX6QW4LBWX,2025-08-29 20:54:49,Card,Confirmed,1089.07,C101208,M200972,customer,merchant,M200972,RU,Monitored,Yes,No,12.0,R13_ip_anomaly_or_proxy_tor_vpn
+T1FPTRX21C46J,2025-08-30 21:56:48,Card,Confirmed,7890.69,C101208,M200010,customer,merchant,M200010,BR,Low,No,No,0.0,
+T2BJ7J1CQ8KRG,2025-09-03 16:25:49,PIX,Confirmed,902.05,C101208,M200406,customer,merchant,M200406,BR,Low,No,No,35.0,R10_high_risk_mcc; R11_high_risk_merchant_or_cb_ratio
+TK4L0EYT3EP0G,2025-09-04 09:23:00,Card,Confirmed,732.65,C101208,M200153,customer,merchant,M200153,BR,Low,No,No,0.0,
+TOHDJ4A6OYGZA,2025-09-08 23:47:42,Card,Confirmed,6889.49,C101208,M200212,customer,merchant,M200212,YE,Monitored,Yes,No,15.0,R10_high_risk_mcc
+TNWTDZT0605AU,2025-09-15 08:13:08,PIX,Confirmed,6189.18,C101208,M200256,customer,merchant,M200256,BR,Low,No,No,0.0,
+T01OIP42LWSQO,2025-09-17 14:34:48,Wire,Confirmed,17044.1,C101208,M200962,customer,merchant,M200962,PT,Low,Yes,No,18.0,R16_low_income_high_single_tx
+TKQD7O5QATE4I,2025-09-17 17:16:33,PIX,Confirmed,2091.73,C101208,M200538,customer,merchant,M200538,BR,Low,No,No,35.0,R10_high_risk_mcc; R11_high_risk_merchant_or_cb_ratio
+TJ126Q8LC58DE,2025-09-18 05:34:25,Card,Confirmed,1156.05,C100957,C101208,customer,customer,,BR,Low,No,No,0.0,
+TB4G6UGKC4ZQX,2025-09-21 00:47:52,Card,Failed,3103.75,C101208,M200878,customer,merchant,M200878,BR,Low,No,No,20.0,R11_high_risk_merchant_or_cb_ratio
+TIQS2U9KT1J0U,2025-09-23 10:09:41,Card,Confirmed,14011.86,C101208,M200637,customer,merchant,M200637,BR,Low,No,No,33.0,R10_high_risk_mcc; R16_low_income_high_single_tx
+TF9EJQVFQTQJM,2025-09-23 23:17:39,PIX,Confirmed,7718.63,C101208,M200331,customer,merchant,M200331,RU,Monitored,Yes,No,35.0,R10_high_risk_mcc; R11_high_risk_merchant_or_cb_ratio
+THDD6Q9WQT288,2025-09-24 00:55:12,Card,Pending,1812.58,C101208,M200958,customer,merchant,M200958,BR,Low,No,No,20.0,R11_high_risk_merchant_or_cb_ratio
+T3QB10DC6JOC7,2025-09-24 09:23:26,PIX,Confirmed,7437.22,C101208,M200798,customer,merchant,M200798,BR,Low,No,No,10.0,R14_rooted_device
+TQ0HI60JXN1ZX,2025-09-29 06:20:57,Card,Confirmed,1103.41,C101208,M200245,customer,merchant,M200245,BR,Low,No,No,20.0,R11_high_risk_merchant_or_cb_ratio
+TQM7RNH5KFSF0,2025-10-02 19:58:36,PIX,Confirmed,2775.86,C101767,C101208,customer,customer,,BR,Low,No,No,0.0,
