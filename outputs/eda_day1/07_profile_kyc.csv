@@ -1,0 +1,17 @@
+coluna,tipo,n_null_excel,pct_null_excel,n_semantico_vazio_na,pct_semantico_vazio_na,n_unicos,exemplo
+customer_id,object,0,0.0,0,0.0,2500,C100000
+full_name,object,0,0.0,0,0.0,2500,Customer 1
+cpf_cnpj,int64,0,0.0,0,0.0,2500,52601815908
+date_of_birth,object,0,0.0,0,0.0,2388,1977-04-06
+annual_income_brl,int64,0,0.0,0,0.0,2397,46542
+declared_occupation,object,0,0.0,0,0.0,16,Dentist
+risk_rating,object,0,0.0,0,0.0,3,Low
+registration_date,object,0,0.0,0,0.0,1461,2024-09-08
+country,object,0,0.0,0,0.0,1,BR
+state,object,0,0.0,0,0.0,14,SP
+city,object,0,0.0,0,0.0,15,São Paulo
+beneficial_owner,object,0,0.0,0,0.0,2,No
+pep,object,0,0.0,0,0.0,2,No
+kyc_tier,object,0,0.0,0,0.0,3,L1
+kyc_risk_score,int64,0,0.0,0,0.0,97,50
+sanctions_list_hit,object,0,0.0,0,0.0,2,No

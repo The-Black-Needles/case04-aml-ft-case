@@ -1,0 +1,26 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Ambiente e segredos
+.env
+*.pem
+*.key
+*.crt
+
+# Temporários
+tmp/
+temp/
+*.log
+
+# Relatórios temporários
+reports/tmp/
+outputs/tmp/

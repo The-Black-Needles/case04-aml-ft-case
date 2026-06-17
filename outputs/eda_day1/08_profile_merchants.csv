@@ -1,0 +1,11 @@
+coluna,tipo,n_null_excel,pct_null_excel,n_semantico_vazio_na,pct_semantico_vazio_na,n_unicos,exemplo
+merchant_id,object,0,0.0,0,0.0,1000,M200000
+merchant_name,object,0,0.0,0,0.0,1000,Merchant 1
+cnpj,int64,0,0.0,0,0.0,1000,65240421527930
+mcc,int64,0,0.0,0,0.0,14,5411
+country,object,0,0.0,0,0.0,20,BR
+city,object,0,0.0,1000,100.0,1,NA
+owner_customer_id,object,0,0.0,651,65.1,320,C101280
+merchant_high_risk_flag,object,0,0.0,0,0.0,2,No
+merchant_chargeback_ratio_90d,float64,0,0.0,0,0.0,180,0.034
+mcc_risk,object,0,0.0,0,0.0,2,Normal

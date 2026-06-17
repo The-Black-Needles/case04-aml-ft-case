@@ -1,0 +1,36 @@
+check,violacoes
+PIX total,31547
+PIX pix_flag_not_Yes,0
+PIX pix_flow_invalid,0
+PIX card_brand_not_na,0
+PIX issuing_or_acquiring_not_na,0
+PIX payment_method_not_na,0
+PIX card_present_not_na,0
+PIX auth_3ds_not_na,0
+PIX eci_not_na,0
+Card total,17930
+Card pix_flag_not_No,0
+Card pix_flow_not_na,0
+Card card_brand_na,0
+Card issuing_or_acquiring_invalid,0
+Card card_present_invalid,0
+Card auth_3ds_invalid,10835
+Card eci_na,10835
+Card payment_method_na,0
+Wire total,2523
+Wire pix_flag_not_No,0
+Wire pix_flow_not_na,0
+Wire card_brand_not_na,0
+Wire issuing_or_acquiring_not_na,0
+Wire payment_method_not_na,0
+Wire card_present_not_na,0
+Wire auth_3ds_not_na,0
+Wire eci_not_na,0
+FX amount_brl mismatch >0.02,0
+timestamp_invalidos,0
+amount_zero_ou_negativo,0
+sender customer sem KYC,0
+receiver customer sem KYC,0
+sender merchant sem cadastro merchant,0
+receiver merchant sem cadastro merchant,0
+owner_customer_id merchant sem KYC,0
