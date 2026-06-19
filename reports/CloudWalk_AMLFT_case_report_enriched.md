@@ -46,4 +46,4 @@ As limitações principais são: base sintética, ausência de label investigati
 
 ## Conclusão
 
-A entrega já está no nível esperado pelo desafio e os enriquecimentos elevaram a robustez de apresentação e defesa técnica sem criar complexidade desnecessária. O principal valor permanece o mesmo: transformar dados brutos em uma fila AML auditável, explicável e priorizada.
+O principal valor permanece o mesmo: transformar dados brutos em uma fila AML auditável, explicável e priorizada.
