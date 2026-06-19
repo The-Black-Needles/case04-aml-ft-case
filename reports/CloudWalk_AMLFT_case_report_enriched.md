@@ -1,6 +1,5 @@
-# Relatório AML/FT - CloudWalk Case (versão enriquecida)
+# Relatório AML/FT - Case (versão enriquecida)
 
-**Autor:** Ricardo Almeida  
 **Estilo visual:** alinhado ao deck dark theme do case  
 **Versão:** enriquecida após PPTX, geo-salto literal, grafo do SAR e reforço de notebooks.
 
