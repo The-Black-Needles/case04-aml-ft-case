@@ -1,7 +1,7 @@
-# EDA DIA 1 — AML Case CloudWalk
+# EDA DIA 1 — AML/FT Transaction Monitoring Case Study
 
 ## Confirmação dos arquivos
-- Fonte analisada: AML Case Cloudwalk INC (2).xlsx
+- Fonte analisada: AML/FT Transaction Monitoring Case Study INC (2).xlsx
 - Abas: Transactions, KYC_Profiles, Merchants, GeoBehavior, Data_Dictionary
 
 ## Shape por aba

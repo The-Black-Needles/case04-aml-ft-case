@@ -1,5 +1,5 @@
 """
-Multi-agent AML/FT workflow for the CloudWalk case.
+Multi-agent AML/FT workflow for the generic AML/FT case study.
 
 This module implements a sequential, auditable LLM-style workflow with five agents:
 1. Dados

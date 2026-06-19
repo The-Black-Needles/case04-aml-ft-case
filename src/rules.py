@@ -5,7 +5,7 @@ from typing import Dict, List
 import pandas as pd
 import numpy as np
 
-XLSX = Path('/mnt/data/AML Case Cloudwalk INC (2).xlsx')
+XLSX = Path('/mnt/data/AML/FT Transaction Monitoring Case Study INC (2).xlsx')
 OUT_ROOT = Path('/mnt/data/aml_case_outputs/t1_suspects')
 PKG_ROOT = Path('/mnt/data/aml_ft_case_t1_package')
 NS_MAIN='http://schemas.openxmlformats.org/spreadsheetml/2006/main'
