@@ -1,4 +1,4 @@
-# AML-FT Case - CloudWalk
+# AML-FT Case
 
 Projeto de case AML/FT com foco em análise exploratória, regras de detecção, modelo de ML explicável, SAR e arquitetura multi-agente.
 
