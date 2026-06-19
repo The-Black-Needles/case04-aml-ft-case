@@ -1,6 +1,5 @@
-# Relatório AML/FT - CloudWalk Case
+# Relatório AML/FT - Case
 
-**Autor:** Ricardo Almeida  
 **Timezone:** America/Sao_Paulo  
 **Data de geração:** 17/06/2026  
 **Repositório:** aml-ft-case
