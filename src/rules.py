@@ -5,9 +5,12 @@ from typing import Dict, List
 import pandas as pd
 import numpy as np
 
-XLSX = Path('/mnt/data/AML/FT Transaction Monitoring Case Study INC (2).xlsx')
-OUT_ROOT = Path('/mnt/data/aml_case_outputs/t1_suspects')
-PKG_ROOT = Path('/mnt/data/aml_ft_case_t1_package')
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+XLSX = PROJECT_ROOT / "data" / "raw" / "AML_FT_Case_Synthetic_Data.xlsx"
+OUT_ROOT = PROJECT_ROOT / "outputs" / "t1_suspects"
+TMP_ROOT = PROJECT_ROOT / "outputs" / "tmp"
+PKG_ROOT = TMP_ROOT / "aml_ft_case_t1_package"
+PACKAGE_ARCHIVE = TMP_ROOT / "aml_ft_case_t1_package"
 NS_MAIN='http://schemas.openxmlformats.org/spreadsheetml/2006/main'
 COL_RE=re.compile(r'([A-Z]+)([0-9]+)')
 
@@ -273,6 +276,6 @@ def main():
         if f.is_file(): shutil.copy2(f,PKG_ROOT/'outputs'/'t1_suspects'/f.name)
     shutil.copy2(Path(__file__),PKG_ROOT/'src'/'rules.py')
     (PKG_ROOT/'src'/'utils.py').write_text('''"""Utilidades para o case AML/FT."""\n\nRANDOM_STATE = 42\nTIMEZONE = "America/Sao_Paulo"\n''',encoding='utf-8')
-    shutil.make_archive('/mnt/data/aml_ft_case_t1_package','zip',PKG_ROOT)
-    print(json.dumps({'candidate_id':cid,'zip':'/mnt/data/aml_ft_case_t1_package.zip','top_clients':top_clients.head(5)[['customer_id','priority','final_customer_score','total_amount','tx_count','sanctions_tx_count','sanctions_list_hit','pep','risk_rating']].to_dict('records'),'top_transactions':tx_top.head(5)[['transaction_id','subject_customer_id','transaction_type','amount_brl','receiver_country','sanctions_screening_hit','tx_rule_score']].to_dict('records')},ensure_ascii=False,default=str,indent=2))
+    shutil.make_archive(str(PACKAGE_ARCHIVE), 'zip', PKG_ROOT)
+    print(json.dumps({'candidate_id':cid,'zip':str(PACKAGE_ARCHIVE.with_suffix('.zip')),'top_clients':top_clients.head(5)[['customer_id','priority','final_customer_score','total_amount','tx_count','sanctions_tx_count','sanctions_list_hit','pep','risk_rating']].to_dict('records'),'top_transactions':tx_top.head(5)[['transaction_id','subject_customer_id','transaction_type','amount_brl','receiver_country','sanctions_screening_hit','tx_rule_score']].to_dict('records')},ensure_ascii=False,default=str,indent=2))
 if __name__=='__main__': main()
