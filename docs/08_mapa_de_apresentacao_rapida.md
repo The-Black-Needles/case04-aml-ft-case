@@ -1,137 +1,126 @@
-# Mapa rápido para apresentar o repo
+# Mapa rápido para apresentar o repositório
 
-Este é o caminho recomendado para apresentar o case navegando pelo repositório.
+Este é o caminho recomendado para uma apresentação técnica curta e estruturada.
 
-## 1. Começar pelo README
+## 1. Contexto e objetivo
 
-Arquivo:
+Abrir:
 
 - `README.md`
 
 Fala:
 
-“Esse é o mapa geral do case. Eu organizei o projeto como uma esteira AML completa, saindo de dados brutos até relatório, SAR, ML e multi-agente.”
+“O objetivo do case é transformar dados sintéticos de Financial Crime em uma fila de investigação priorizada, explicável e auditável.”
 
----
+## 2. EDA e coerência
 
-## 2. Mostrar EDA
+Abrir:
 
-Pasta:
-
-- `outputs/eda_day1/`
-
-Arquivos principais:
-
-- `EDA_DIA1_resumo.md`
-- `03_rail_coherence_checks.csv`
-- `04_initial_aml_signals.csv`
+- `outputs/eda_day1/EDA_DIA1_resumo.md`
+- `outputs/eda_day1/03_rail_coherence_checks.csv`
+- `outputs/eda_day1/04_initial_aml_signals.csv`
 
 Fala:
 
-“Antes de criar regras, eu validei qualidade e coerência dos dados. Separei por rail porque PIX, cartão e wire têm riscos diferentes.”
+“Antes de criar regras, validei qualidade e coerência. PIX, Card e Wire foram analisados separadamente porque possuem riscos e campos distintos.”
 
----
+## 3. Suspeitos, timeline e SAR
 
-## 3. Mostrar suspeitos e SAR
+Abrir:
 
-Pasta:
-
-- `outputs/t1_suspects/`
-
-Arquivos principais:
-
-- `02_suspicious_transactions_top30.csv`
-- `03_suspicious_clients_top30.csv`
-- `07_SAR_draft_C101208.md`
+- `outputs/t1_suspects/02_suspicious_transactions_top30.csv`
+- `outputs/t1_suspects/03_suspicious_clients_top30.csv`
+- `outputs/t1_suspects/06_sar_candidate_timeline_C101208.csv`
+- `outputs/t1_suspects/07_SAR_draft_C101208.md`
+- `outputs/t1_suspects/11_sar_entity_graph_C101208.png`
 
 Fala:
 
-“Aqui está a fila de investigação. Eu priorizei clientes e transações com maior concentração de sinais, e escolhi um caso com materialidade e timeline para estruturar o SAR.”
+“A fila prioriza combinação de sinais, materialidade e recorrência. O SAR organiza uma suspeita fundamentada, sem afirmar crime.”
 
----
+## 4. Rule Engineering
 
-## 4. Mostrar sistema de alertas
+Abrir:
 
-Pasta:
-
-- `outputs/t2_alert_system/`
-
-Arquivo principal:
-
-- `01_alert_rules_catalog_t2.csv`
+- `outputs/t1_suspects/01_rule_catalog_t1.csv`
+- `outputs/t2_alert_system/01_alert_rules_catalog_t2.csv`
+- `outputs/t2_alert_system/03_rule_examples_t2.md`
 
 Fala:
 
-“Esse é o catálogo do motor de alertas. Cada regra tem lógica, parâmetro, severidade, tipologia, exemplo na base e ação operacional sugerida.”
+“O motor principal possui 28 regras explicáveis. A R17 foi adicionada posteriormente como enriquecimento contextual e ainda permanece separada do pipeline principal.”
 
----
+Pontos para discutir:
 
-## 5. Mostrar ML
+- lógica e thresholds;
+- severidade;
+- rail;
+- falso positivo;
+- evidência;
+- ação operacional;
+- impacto na fila.
 
-Pasta:
+## 5. Machine Learning
 
-- `outputs/t3_ml/`
+Abrir:
 
-Arquivos principais:
-
-- `00_T3_ml_summary.md`
-- `04_threshold_metrics.csv`
-- `05_feature_importance.csv`
-- `06_shap_top_features.csv`
-
-Fala:
-
-“O modelo usa label fraco vindo das regras. Ele não substitui o analista; ele prioriza a fila e ajuda a entender quais fatores pesaram no score.”
-
----
-
-## 6. Mostrar multi-agente
-
-Pasta:
-
-- `outputs/t4_agents/`
-
-Arquivos principais:
-
-- `01_agent_prompts.md`
-- `04_agent_diagram.mmd`
-- `02_agent_workflow_run.md`
+- `outputs/t3_ml/03_metrics_summary.csv`
+- `outputs/t3_ml/04_threshold_metrics.csv`
+- `outputs/t3_ml/05_feature_importance.csv`
+- `outputs/t3_ml/06_shap_top_features.csv`
 
 Fala:
 
-“O fluxo multi-agente organiza a operação em cinco etapas: dados, detecção, investigação, reporte e compliance. A proposta é aumentar padronização e produtividade, mantendo revisão humana.”
+“O XGBoost foi estruturado como baseline cliente-mês com label fraco. As métricas são altas, mas devem ser interpretadas à luz da circularidade do label, do split e das limitações de reprodução.”
 
----
+Ponto de transparência:
 
-## 7. Mostrar relatório final
+“Os artefatos de SHAP estão versionados, mas sua geração completa ainda precisa ser incorporada ao código público.”
 
-Pasta:
+## 6. Arquitetura de agentes
 
-- `reports/`
+Abrir:
 
-Arquivo principal:
-
-- `AML_FT_Case_Report.pdf`
+- `outputs/t4_agents/04_agent_diagram.mmd`
+- `outputs/t4_agents/01_agent_prompts.md`
+- `src/agents.py`
 
 Fala:
 
-“Este PDF consolida a entrega executiva em 5 páginas, cobrindo metodologia, achados, regras, SAR, ML e multi-agente.”
+“A T4 atual demonstra cinco papéis em uma simulação determinística: Dados, Detecção, Investigação, Reporte e Compliance. Ainda não há inferência real por LLM.”
 
----
+Evolução planejada:
 
-## 8. Fechar com defesa
+- orquestrador explícito;
+- estado compartilhado;
+- contratos tipados;
+- handoffs;
+- eventos e filas;
+- checkpoints humanos;
+- decisão `approve`, `revise` ou `escalate`;
+- logs e testes.
 
-Arquivos:
+## 7. Relatório técnico
+
+Abrir:
+
+- `reports/AML_FT_Case_Report.md`
+
+Fala:
+
+“O Markdown é a fonte canônica do relatório. O PDF anterior foi removido e será regenerado após a validação completa do repositório.”
+
+## 8. Limitações e defesa
+
+Abrir:
 
 - `docs/07_revisao_critica_e_defesa.md`
 - `presentation/perguntas_e_respostas_banca.md`
 
 Fala:
 
-“Também deixei registrada uma revisão crítica, com limitações, trade-offs e respostas para perguntas prováveis. Isso mostra que eu não tratei o case como modelo perfeito, mas como uma solução defensável e evolutiva.”
+“O case separa claramente resultado experimental, capacidade demonstrada e itens ainda não implementados.”
 
----
+## Fechamento
 
-## Frase final
-
-“Meu objetivo foi transformar uma base transacional em uma fila AML auditável, explicável e priorizada, conectando investigação, regras, ML e automação com LLM.”
+“O principal valor está em conectar investigação, regras, dados, ML e agentes de IA sem perder explicabilidade, rastreabilidade ou responsabilidade humana.”

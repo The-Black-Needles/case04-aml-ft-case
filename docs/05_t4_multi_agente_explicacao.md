@@ -1,57 +1,143 @@
-# T4 — Multi-Agente LLM: explicação para apresentação
+# T4 - Protótipo de arquitetura multiagente
 
-## Objetivo da etapa
+## Objetivo
 
-Nesta etapa, eu desenhei um fluxo multi-agente para apoiar a operação AML/FT de ponta a ponta.
+A T4 apresenta um desenho sequencial para organizar uma investigação AML/FT em cinco etapas controladas.
 
-A ideia não é substituir o analista nem deixar um LLM decidir sozinho. A proposta é usar agentes como camadas de apoio para organizar dados, priorizar alertas, montar investigação, estruturar SAR e revisar compliance.
+O objetivo é demonstrar:
 
-## O que foi feito
+- separação de responsabilidades;
+- passagem estruturada de contexto;
+- rastreabilidade;
+- evidências versionadas;
+- revisão humana;
+- auditabilidade.
 
-Criei um script Python sequencial em `src/agents.py` com cinco agentes:
+## Arquitetura
 
-1. **Dados** — valida ingesta, qualidade, coerência por rail e enriquecimento.
-2. **Detecção** — combina regras AML e score de ML para fila priorizada.
-3. **Investigação** — monta entidade 360°, timeline e deduplicação de fatos.
-4. **Reporte** — estrutura SAR/ROS em linguagem objetiva.
-5. **Compliance** — revisa BACEN, COAF, FATF/GAFI, sanções e auditoria.
+O fluxo possui cinco etapas.
 
-Também criei prompts, diagrama, exemplo de execução, notebook e roteiro de apresentação.
+### 1. Dados
 
-## Por que foi feito assim
+Responsável por:
 
-Escolhi um fluxo sequencial porque AML exige controle, rastreabilidade e revisão humana.
+- ingesta;
+- validação de qualidade;
+- coerência por rail;
+- enriquecimento;
+- registro de limitações.
 
-Um agente totalmente autônomo seria mais difícil de auditar. Já um fluxo em etapas deixa claro:
+### 2. Detecção
 
-- quem recebeu qual contexto;
-- qual decisão foi tomada;
-- qual evidência foi usada;
-- qual saída foi enviada para a próxima etapa.
+Responsável por:
 
-## Raciocínio principal
+- regras AML;
+- score de ML;
+- priorização;
+- consolidação da fila de alertas.
 
-O desenho segue a mesma lógica do case:
+### 3. Investigação
 
-1. Primeiro dados confiáveis.
-2. Depois regras explicáveis.
-3. Depois ML para priorização.
-4. Depois investigação com timeline.
-5. Depois SAR.
-6. Por fim revisão de compliance.
+Responsável por:
 
-## Como explicar em entrevista
+- visão de entidade 360°;
+- timeline;
+- deduplicação;
+- organização de evidências;
+- hipóteses investigativas.
 
-“Na T4 eu desenhei um fluxo multi-agente para apoiar AML de forma controlada. O primeiro agente valida os dados; o segundo usa regras e ML para priorizar; o terceiro monta a investigação 360°; o quarto estrutura o SAR; e o quinto revisa compliance e auditoria. O LLM não substitui o analista. Ele organiza evidências, reduz esforço manual e melhora padronização, mantendo revisão humana em cada etapa.”
+### 4. Reporte
 
-## Limitações e trade-offs
+Responsável por estruturar uma minuta de SAR ou ROS para revisão humana.
 
-O principal trade-off é segurança versus autonomia.
+### 5. Compliance
 
-Para AML, eu prefiro menos autonomia e mais controle. Por isso o fluxo é sequencial, com saídas estruturadas e checkpoints de revisão humana.
+Responsável por:
 
-Outra limitação é que o LLM depende da qualidade do contexto fornecido. Por isso o agente de Dados vem primeiro e o motor de regras continua sendo a base explicável da detecção.
+- revisão regulatória em alto nível;
+- sanções;
+- consistência da narrativa;
+- trilha de auditoria;
+- encaminhamento para aprovação humana final.
 
-## Frase de fechamento
+## O que está implementado
 
-“O multi-agente funciona como uma esteira assistida de investigação AML: ele não decide sozinho, mas ajuda o analista a transformar dados, regras, ML e evidências em uma narrativa auditável e pronta para compliance.”
+O arquivo `src/agents.py` contém uma simulação determinística e sequencial.
+
+O script demonstra:
+
+- prompts de referência;
+- saídas estruturadas e contexto compartilhado em dicionário;
+- achados;
+- decisões;
+- próximas ações;
+- arquivos de evidência;
+- passagem de contexto entre etapas.
+
+A execução não depende de rede ou credenciais externas.
+
+## O que não está implementado
+
+O protótipo não realiza:
+
+- chamadas a OpenAI, Anthropic ou outro provedor;
+- inferência real por LLM;
+- seleção autônoma de ferramentas;
+- investigação autônoma;
+- decisão regulatória;
+- envio de comunicação;
+- operação em produção.
+
+Os prompts funcionam como contratos de referência para uma integração futura.
+
+## Por que usar fluxo sequencial
+
+AML/FT exige controle e capacidade de reconstruir o processo.
+
+Uma arquitetura sequencial facilita identificar:
+
+- qual contexto cada etapa recebeu;
+- quais evidências foram consideradas;
+- qual saída foi produzida;
+- qual decisão ficou pendente;
+- onde inserir revisão humana.
+
+## Trade-offs
+
+O desenho privilegia controle sobre autonomia.
+
+Vantagens:
+
+- maior auditabilidade;
+- menor risco de decisões opacas;
+- contexto mais delimitado;
+- facilidade para inserir checkpoints humanos;
+- melhor separação de responsabilidades.
+
+Limitações:
+
+- menor autonomia;
+- maior latência;
+- dependência da qualidade dos dados;
+- necessidade de validação dos prompts;
+- ausência atual de integração com LLM;
+- ausência de avaliações formais de qualidade.
+
+## Como apresentar
+
+“Na T4, construí um protótipo determinístico e sequencial com cinco etapas: Dados, Detecção, Investigação, Reporte e Compliance. O código demonstra estrutura de contexto, saídas estruturadas e referências de evidência. Ele não faz chamadas reais a LLM e não toma decisões autônomas. A proposta é mostrar como uma integração futura poderia ser construída com controle e revisão humana.”
+
+## Evolução futura
+
+Uma implementação com LLM exigiria:
+
+- guardrails;
+- controle de acesso;
+- minimização de dados;
+- logs;
+- versionamento de prompts;
+- avaliações de qualidade;
+- proteção contra prompt injection;
+- validação de citações e evidências;
+- monitoramento de custo e latência;
+- aprovação humana antes de qualquer ação regulatória.

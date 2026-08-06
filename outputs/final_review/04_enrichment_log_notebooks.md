@@ -1,23 +1,46 @@
-# Enriquecimento — notebooks 01 e 02
+# Estado dos notebooks 01 e 02
 
-## O que foi feito
+## Objetivo
 
-Foram reforçados os notebooks:
+Os notebooks 01 e 02 foram criados para tornar o raciocínio de EDA e regras mais fácil de inspecionar.
 
-- `notebooks/01_eda.ipynb`
-- `notebooks/02_rules.ipynb`
+## Benefícios atuais
 
-## Motivo
+- Organizam a leitura técnica.
+- Mostram parte do raciocínio passo a passo.
+- Facilitam a navegação durante a apresentação.
+- Relacionam análise exploratória, regras e outputs.
 
-O documento do case solicita caderno técnico e/ou scripts reprodutíveis. Como o repositório já possui scripts fortes, o reforço dos notebooks tem objetivo de melhorar a leitura técnica e a defesa da apresentação.
+## Limites atuais
 
-## Benefício
+Os notebooks estão versionados:
 
-- Melhora reprodutibilidade.
-- Facilita demonstração técnica.
-- Mostra raciocínio passo a passo.
-- Evita percepção de notebooks como placeholders.
+- sem contadores de execução;
+- sem outputs;
+- com referência ao nome antigo da planilha;
+- sem evidência de execução ponta a ponta.
 
-## Trade-off
+O notebook 02 não substitui todo o motor de regras.
 
-Os notebooks foram mantidos objetivos. A lógica completa de produção permanece nos scripts em `src/`, enquanto os notebooks funcionam como narrativa técnica executável.
+Além disso:
+
+- `src/alerts.py` possui erro de sintaxe;
+- `src/rules.py` ainda utiliza caminhos antigos;
+- a R17 ainda não está integrada ao motor principal;
+- nem todos os outputs são regenerados pelos notebooks.
+
+## Formulação correta
+
+Os notebooks melhoram a documentação e a demonstração do raciocínio.
+
+Eles ainda não comprovam reprodução integral nem representam lógica produtiva.
+
+## Próximos passos
+
+- corrigir caminhos;
+- alinhar notebooks e scripts;
+- executar em Python 3.11;
+- registrar outputs;
+- adicionar smoke tests;
+- validar os artefatos gerados;
+- documentar um comando de execução.

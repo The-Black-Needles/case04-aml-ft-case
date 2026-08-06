@@ -1,43 +1,81 @@
-# Outputs T4 — Multi-Agente LLM
+# Outputs T4 - Arquitetura multiagente
 
-## O que tem nesta pasta
+## Estado atual
 
-Esta pasta contém a documentação e a simulação do fluxo multi-agente AML/FT.
+Esta pasta contém documentação e exemplos de uma simulação determinística do fluxo AML/FT.
 
-## Arquivos principais
+A implementação atual não realiza chamadas reais a LLM.
+
+## Arquivos
 
 ### `00_T4_agents_summary.md`
 
-Resumo executivo da T4.
+Resumo técnico, limites atuais e evolução planejada.
 
 ### `01_agent_prompts.md`
 
-Prompts dos cinco agentes:
+Prompts de referência para os papéis:
 
-- Dados
-- Detecção
-- Investigação
-- Reporte
-- Compliance
+- Dados;
+- Detecção;
+- Investigação;
+- Reporte;
+- Compliance.
+
+Os prompts ainda não são enviados a um provedor externo.
 
 ### `02_agent_workflow_run.md`
 
-Exemplo de execução sequencial do fluxo.
+Exemplo versionado de execução sequencial.
 
-Mostra o que cada agente recebe, decide e entrega para o próximo passo.
+O conteúdo ainda precisa ser regenerado para ficar integralmente alinhado ao schema atual de `src/agents.py`.
 
 ### `03_agent_workflow_run.json`
 
-Saída estruturada em JSON. Útil para auditoria, integração e rastreabilidade.
+Exemplo de saída estruturada.
+
+O arquivo atual não deve ser interpretado como log de uma inferência real por LLM.
 
 ### `04_agent_diagram.mmd`
 
-Diagrama Mermaid do fluxo.
+Diagrama Mermaid do fluxo sequencial.
 
-## Como explicar esta etapa em 1 minuto
+### `05_agent_roles.csv`
 
-“Esta etapa mostra como eu usaria LLMs de forma segura e operacional em AML. O fluxo é sequencial: primeiro valida dados, depois detecta alertas com regras e ML, depois investiga, depois gera SAR e por fim revisa compliance. O agente não toma decisão sozinho; ele organiza evidências e ajuda o analista a trabalhar mais rápido, com trilha auditável.”
+Resumo dos papéis e responsabilidades.
 
-## Ponto de atenção
+## Código relacionado
 
-O desenho é propositalmente sequencial e controlado. Para AML, isso é melhor do que um agente totalmente autônomo, porque facilita auditoria, revisão humana e explicação para compliance.
+- `src/agents.py`
+- `notebooks/04_agents.ipynb`
+- `docs/05_t4_multi_agente_explicacao.md`
+- `presentation/roteiro_t4_multi_agente.md`
+
+## O que o protótipo demonstra
+
+- decomposição do processo em cinco papéis;
+- execução sequencial;
+- prompts de referência;
+- achados e decisões estruturados;
+- arquivos de evidência;
+- revisão humana como princípio.
+
+## O que o protótipo não demonstra
+
+- inferência ativa por LLM;
+- autonomia investigativa;
+- integração com API;
+- eventos ou filas reais;
+- decisão automática de compliance;
+- deploy;
+- operação produtiva.
+
+## Como explicar
+
+“Esta etapa demonstra uma arquitetura controlada para organizar dados, detecção, investigação, reporte e compliance. Na versão atual, o fluxo é determinístico e não chama um LLM. A evolução v2 adicionará contratos tipados, estado compartilhado, handoffs, checkpoints humanos, logs e integração opcional com um provedor.”
+
+## Princípio de segurança
+
+Nenhuma conclusão de risco, comunicação regulatória ou ação sobre cliente deve ser executada automaticamente.
+
+A decisão deve permanecer sob responsabilidade humana.

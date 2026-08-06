@@ -1,42 +1,89 @@
-# Roteiro T3 — Modelo de ML
+# Roteiro T3 - Machine Learning explicável
 
 ## Tempo sugerido
 
-6 a 8 minutos.
+5 a 7 minutos.
 
-## Como introduzir
+## Introdução
 
-“Depois de criar as regras, eu usei essas regras para construir um label fraco e treinar um modelo de priorização.”
+“Depois de construir o motor de regras, usei seus resultados para criar um label fraco e estruturar um baseline de priorização cliente-mês.”
 
-## O que abrir no repo
+## Arquivos para mostrar
 
-Abrir:
+- `outputs/t3_ml/03_metrics_summary.csv`
+- `outputs/t3_ml/04_threshold_metrics.csv`
+- `outputs/t3_ml/05_feature_importance.csv`
+- `outputs/t3_ml/06_shap_top_features.csv`
+- `outputs/t3_ml/07_validation_scored_top30.csv`
+- `docs/04_t3_ml_explicacao.md`
 
-`outputs/t3_ml/README.md`
+## Desenho experimental
 
-Depois mostrar:
+- Modelo: XGBoost.
+- População: PF.
+- Unidade: cliente-mês.
+- Label: três ou mais regras disparadas.
+- Treino: julho e agosto de 2025.
+- Validação: setembro e outubro de 2025.
+- `random_state=42`.
 
-- `03_metrics_summary.csv`
-- `04_threshold_metrics.csv`
-- `06_shap_top_features.csv`
-- `07_validation_scored_top30.csv`
+Fala:
 
-## Fala principal
+“O label não representa fraude ou lavagem confirmada. Ele funciona como proxy experimental de relevância para a fila.”
 
-“Na T3 eu não tratei o ML como uma caixa mágica. Primeiro criei regras explicáveis. Depois usei a regra de três ou mais alertas para criar o label fraco. Com isso, montei uma base cliente-mês e treinei um XGBoost para PF.”
+## Leakage e circularidade
 
-## Ponto de explicação
+Fala:
 
-“O split foi temporal: treino nos meses antigos e validação nos meses recentes. Isso é mais realista do que um split aleatório, porque em produção eu quero prever o que vem depois, não embaralhar passado e futuro.”
+“Removi do treino as colunas das regras e `rule_count`, reduzindo vazamento direto. Mesmo assim, existe circularidade conceitual porque o label e as features representam comportamentos próximos.”
 
-## Trade-off
+## Métricas
 
-“O threshold não é uma decisão puramente estatística. Ele depende da capacidade operacional do time. Um threshold menor aumenta recall, mas gera mais alertas. Um threshold maior reduz falsos positivos, mas pode deixar caso suspeito passar.”
+Resultados registrados:
+
+- AUC-PR: 0,9416.
+- AUC-ROC: 0,9970.
+- Precision: 0,9241.
+- Recall: 0,7725.
+- FPR: 0,0031.
+- MCC: 0,8382.
+
+Fala:
+
+“As métricas são altas, mas devem ser interpretadas no contexto do label fraco e da base sintética. Elas não validam um modelo produtivo.”
+
+## Threshold
+
+Fala:
+
+“O threshold de 0,9 apresentou a maior MCC na própria validação. Portanto, ele é uma referência estatística, não um corte operacional calibrado.”
+
+Explicar que a decisão real depende de:
+
+- capacidade da fila;
+- severidade;
+- SLA;
+- custo de falso positivo;
+- custo de falso negativo;
+- cobertura de risco;
+- apetite da instituição.
 
 ## Explicabilidade
 
-“Usei SHAP para mostrar quais variáveis mais pesaram no score. Isso é essencial em AML porque o modelo precisa ser defensável para investigação, auditoria e compliance.”
+Fala:
+
+“Os artefatos de importância e SHAP mostram como a explicabilidade foi analisada no experimento. A geração completa desses outputs ainda precisa ser incorporada ao código público.”
+
+## Limitações
+
+- mesmos clientes podem aparecer em treino e validação;
+- possível agregação geográfica do período completo;
+- outubro incompleto;
+- ausência de conjunto de calibragem;
+- ausência de teste final;
+- ausência de feedback investigativo;
+- modelo PJ não treinado.
 
 ## Fechamento
 
-“O modelo não substitui as regras nem o analista. Ele entra como uma camada de priorização, ajudando a ordenar a fila de investigação.”
+“O ML agrega como camada complementar de priorização. Regras preservam a explicação operacional, enquanto o modelo ajuda a ordenar combinações de sinais.”

@@ -1,205 +1,31 @@
-# Roteiro de apresentação — 30 a 40 minutos
+# Roteiro de apresentação - referência consolidada
 
-## 1. Abertura — 2 minutos
+O roteiro técnico principal está em:
 
-“Eu organizei o case como uma investigação AML orientada a dados. A ideia foi começar pela qualidade da base, depois validar comportamento por rail, transformar sinais em regras explicáveis, ranquear suspeitos e estruturar um SAR.”
+- `presentation/roteiro_final_30_40_min.md`
 
-## 2. Estrutura da base — 4 minutos
+Esse arquivo concentra a sequência recomendada para apresentação:
 
-“Primeiro eu olhei as abas disponíveis: transações, KYC, merchants, comportamento geográfico e dicionário de dados. A base principal tem 52 mil transações e se conecta com os perfis de clientes e merchants.”
+1. dados e coerência por rail;
+2. sinais e hipóteses;
+3. suspeitos, timeline e SAR;
+4. Rule Engineering;
+5. Machine Learning explicável;
+6. arquitetura multiagente;
+7. limitações e próximos passos.
 
-Ponto principal:
-- Mostrar que a análise não começou por regra, mas por entendimento da base.
+Para aprofundamento específico, consultar:
 
-## 3. Qualidade e coerência — 5 minutos
+- `presentation/roteiro_t2_sistema_alertas.md`
+- `presentation/roteiro_t3_ml.md`
+- `presentation/roteiro_t4_multi_agente.md`
+- `presentation/perguntas_e_respostas_banca.md`
 
-“Antes de criar alerta, eu validei se os dados faziam sentido: duplicatas, datas, valores negativos, nulos e relacionamento entre tabelas.”
+A apresentação deve separar claramente:
 
-Ponto principal:
-- Explicar que campos nulos podem ser informativos.
-- Explicar que alguns nulos são apenas “não aplicável” por rail.
+- resultados demonstrados;
+- limitações experimentais;
+- capacidades ainda não implementadas;
+- evolução planejada.
 
-## 4. Análise por rail — 5 minutos
-
-“Eu separei PIX, Card e Wire porque cada rail tem risco diferente.”
-
-PIX:
-- Foco em cash-in/cash-out, velocidade, conta de passagem e mule account.
-
-Card:
-- Foco em e-commerce, 3DS, MCC de risco e chargeback.
-
-Wire:
-- Foco em cross-border, país de destino, sanções e alto valor.
-
-## 5. Sinais iniciais AML — 5 minutos
-
-“Na EDA já apareceram sinais relevantes: sanções, PEP, cliente high risk, MCC high risk, IP anomaly, device rooted, cross-border e país de alto risco.”
-
-Ponto principal:
-- Não tratar todo sinal como caso suspeito automaticamente.
-- Sinal isolado vira triagem; combinação de sinais vira prioridade.
-
-## 6. Regras e ranking — 8 minutos
-
-“Depois da EDA, transformei os sinais em regras. Separei regras transacionais e regras cliente-mês.”
-
-Regras transacionais:
-- Sanções.
-- País de alto risco.
-- Alto valor.
-- E-commerce sem 3DS.
-- MCC de risco.
-- Device/IP anomaly.
-- Self-merchant.
-
-Regras cliente-mês:
-- Fora de perfil.
-- Alto volume mensal.
-- Muitos cash-ins/cash-outs.
-- Valores redondos.
-- Velocity.
-- Possível conta de passagem.
-
-Ponto principal:
-- Explicar que o ranking prioriza combinação de sinais.
-
-## 7. SAR — 6 minutos
-
-“Para o SAR, eu escolhi um caso com materialidade, combinação de alertas e timeline investigável.”
-
-Estrutura do SAR:
-- Identificação.
-- Resumo executivo.
-- Sinais de alerta.
-- Timeline.
-- Análise.
-- Base legal em alto nível.
-- Conclusão.
-- Ações recomendadas.
-
-Ponto principal:
-- SAR não afirma crime.
-- SAR comunica suspeita fundamentada.
-
-## 8. Fechamento — 3 minutos
-
-“Minha lógica foi manter clareza e explicabilidade. Primeiro regras, depois priorização. O próximo passo é evoluir isso para modelo de ML explicável, usando label fraco baseado nas regras e métricas adequadas para dados desbalanceados.”
-
-## Frase final
-
-“O valor do case está em transformar dados brutos em uma fila AML auditável, priorizada e defensável para investigação.”
-
----
-
-## Bloco adicional — T2 Sistema de Alertas
-
-Tempo sugerido: 5 a 7 minutos.
-
-### Como introduzir
-
-“Depois de fazer a EDA e identificar os primeiros sinais AML, eu transformei esses sinais em um sistema de alertas. A ideia foi criar regras explicáveis, com parâmetros claros e exemplos reais na base.”
-
-### O que mostrar no repo
-
-Abrir a pasta:
-
-`outputs/t2_alert_system/`
-
-Mostrar primeiro:
-
-`00_T2_alert_system_summary.md`
-
-Depois abrir:
-
-`01_alert_rules_catalog_t2.csv`
-
-### Fala principal
-
-“Na T2 eu formalizei o motor de alertas. Primeiro eu peguei os sinais que apareceram na EDA e transformei em regras objetivas. Depois separei as regras em transacionais e comportamentais por cliente-mês. Cada regra tem lógica, parâmetro, severidade, tipologia AML, exemplo na base e ação operacional sugerida. A prioridade não vem de um alerta isolado, mas da combinação de sinais.”
-
-### Ponto que preciso reforçar
-
-“Eu escolhi começar por regras antes do ML porque AML precisa de explicabilidade. Um alerta precisa ser auditável. O analista precisa conseguir explicar por que aquele cliente ou transação entrou na fila.”
-
-### Frase curta de fechamento da T2
-
-“O motor de alertas é a ponte entre a EDA e o ML: ele transforma sinais em decisões auditáveis e também gera o label fraco que será usado na modelagem.”
-
-
-
----
-
-## Bloco adicional — T3 Modelo de ML
-
-Tempo sugerido: 6 a 8 minutos.
-
-### Como introduzir
-
-“Depois de criar as regras, eu usei essas regras para construir um label fraco e treinar um modelo de priorização.”
-
-### O que mostrar no repo
-
-Abrir a pasta:
-
-`outputs/t3_ml/`
-
-Mostrar primeiro:
-
-`README.md`
-
-Depois abrir:
-
-`03_metrics_summary.csv`, `04_threshold_metrics.csv`, `06_shap_top_features.csv` e `07_validation_scored_top30.csv`.
-
-### Fala principal
-
-“Na T3 eu não tratei o ML como uma caixa mágica. Primeiro criei regras explicáveis. Depois usei a regra de três ou mais alertas para criar o label fraco. Com isso, montei uma base cliente-mês e treinei um XGBoost para PF.”
-
-### Ponto que preciso reforçar
-
-“O split foi temporal: treino nos meses antigos e validação nos meses recentes. Isso é mais realista do que um split aleatório, porque em produção eu quero prever o que vem depois, não embaralhar passado e futuro.”
-
-### Frase curta de fechamento da T3
-
-“O ML entra como uma camada de priorização em cima de uma base explicável de regras. Ele ajuda o time a focar primeiro nos casos com maior combinação de risco.”
-
----
-
-## Bloco adicional — T4 Multi-Agente LLM
-
-Tempo sugerido: 5 a 7 minutos.
-
-### Como introduzir
-
-“Depois das regras e do modelo de ML, eu desenhei uma camada multi-agente para apoiar a operação AML de ponta a ponta.”
-
-### O que mostrar no repo
-
-Abrir a pasta:
-
-`outputs/t4_agents/`
-
-Mostrar primeiro:
-
-`README.md`
-
-Depois mostrar:
-
-`04_agent_diagram.mmd`
-
-Depois abrir:
-
-`src/agents.py`
-
-### Fala principal
-
-“Esse fluxo tem cinco agentes. O primeiro valida dados e coerência por rail. O segundo combina regras e ML para priorizar alertas. O terceiro investiga a entidade com timeline e deduplicação. O quarto monta o SAR. O quinto revisa compliance, sanções, BACEN, COAF, FATF e trilha de auditoria.”
-
-### Ponto que preciso reforçar
-
-“O LLM não toma decisão sozinho. Ele atua como apoio operacional para organizar evidências, padronizar investigação e reduzir esforço manual. A decisão continua revisável por analista e compliance.”
-
-### Frase curta de fechamento da T4
-
-“O multi-agente conecta tudo que foi construído antes: EDA, regras, suspeitos, SAR e ML em uma esteira AML auditável.”
+Regras e modelos permanecem como núcleo determinístico. Agentes de IA são apresentados como camada supervisionada de organização e apoio, sem alegação de inferência ativa ou produção na versão atual.

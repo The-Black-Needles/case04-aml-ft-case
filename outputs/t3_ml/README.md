@@ -1,45 +1,107 @@
-# T3 — Modelo de ML AML
+# T3 - Baseline de Machine Learning para priorização AML/FT
 
-## O que tem nesta pasta
+## Objetivo
 
-Esta pasta contém os artefatos da T3: base modelada cliente-mês, label fraco, métricas, tabela de thresholds, explicabilidade por SHAP e top casos ranqueados pelo modelo.
+Esta pasta reúne os artefatos experimentais da modelagem na unidade cliente-mês.
+
+O modelo atua como camada complementar de priorização sobre o motor de regras. Ele não substitui investigação humana, decisão de compliance ou comunicação regulatória.
+
+## Desenho experimental
+
+- Unidade: cliente-mês.
+- População modelada: PF.
+- Modelo: XGBoost.
+- `random_state=42`.
+- Label fraco: `suspicious_label = 1` quando `rule_count >= 3`.
+- Treino: julho e agosto de 2025.
+- Validação: setembro e outubro de 2025.
+
+O label não representa:
+
+- lavagem confirmada;
+- fraude confirmada;
+- caso investigado e encerrado;
+- SAR aceito;
+- decisão regulatória.
 
 ## Arquivos principais
 
-- `01_model_dataset_customer_month.csv`: dataset analítico cliente-mês com features cadastrais, transacionais e semelhança por profissão.
-- `02_label_distribution.csv`: distribuição do label fraco por mês e tipo de entidade.
-- `02b_weak_label_rule_contribution.csv`: contribuição das regras para o label fraco.
-- `03_metrics_summary.csv`: métricas principais do XGBoost PF.
-- `04_threshold_metrics.csv`: precision, recall, FPR e MCC de 0.1 a 0.9.
+- `01_model_dataset_customer_month.csv`: dataset analítico cliente-mês.
+- `02_label_distribution.csv`: distribuição do label.
+- `02b_weak_label_rule_contribution.csv`: contribuição das regras.
+- `03_metrics_summary.csv`: métricas registradas.
+- `04_threshold_metrics.csv`: métricas para thresholds de 0,1 a 0,9.
 - `05_feature_importance.csv`: importância nativa do XGBoost.
-- `06_shap_top_features.csv`: explicabilidade por SHAP médio absoluto.
-- `07_validation_scored_top30.csv`: top 30 cliente-mês por score na validação.
-- `model_xgboost_pf_pipeline.pkl`: pipeline treinado com preprocessamento + XGBoost.
+- `06_shap_top_features.csv`: valores SHAP médios absolutos registrados.
+- `07_validation_scored_top30.csv`: casos com maior score na validação.
+- `model_xgboost_pf_pipeline.pkl`: pipeline serializado.
 
-## Resultado resumido
+## Resultados registrados
 
-- Unidade de modelagem: cliente-mês.
-- Modelo usado: XGBoost PF.
-- Label fraco: `suspicious_label = 1` quando `rule_count >= 3`.
-- Split: treino em 2025-07 e 2025-08; validação em 2025-09 e 2025-10.
-- Linhas de treino: 4998.
-- Linhas de validação: 4109.
+- Linhas de treino: 4.998.
 - Positivos no treino: 422.
+- Linhas de validação: 4.109.
 - Positivos na validação: 189.
-- AUC-PR: 0.9416.
-- AUC-ROC: 0.9970.
-- Threshold operacional sugerido pela maior MCC: 0.9.
-- Precision nesse threshold: 0.9241.
-- Recall nesse threshold: 0.7725.
-- FPR nesse threshold: 0.0031.
-- MCC nesse threshold: 0.8382.
+- AUC-PR: 0,9416.
+- AUC-ROC: 0,9970.
+- Threshold com maior MCC na validação: 0,9.
+- Precision: 0,9241.
+- Recall: 0,7725.
+- FPR: 0,0031.
+- MCC: 0,8382.
 
-## Como explicar em 1 minuto
+## Interpretação correta
 
-“Na T3 eu usei as regras da T2 para criar um label fraco. A regra foi: se um cliente-mês dispara três ou mais regras AML, ele vira suspeito para treino. Depois criei features cadastrais, transacionais e de comparação por profissão, treinei um XGBoost para PF e validei em meses mais recentes. A ideia não é substituir as regras nem o analista, mas priorizar melhor a fila e capturar combinações de sinais.”
+O desempenho elevado deve ser interpretado com cautela.
 
-## Limitações e trade-offs
+As colunas das regras e `rule_count` foram excluídas do treino, reduzindo leakage direto. Entretanto, o label fraco deriva de regras baseadas em comportamentos próximos às features usadas pelo modelo.
 
-A base tem KYC principalmente de PF, então o modelo PJ não foi treinado de forma separada nesta versão. Para PJ, seria necessário ter uma base cadastral robusta de CNPJ/CNAE e histórico transacional suficiente.
+Permanece, portanto, circularidade conceitual entre:
 
-O label é fraco porque foi derivado das regras. Isso é útil para construir um baseline explicável, mas não equivale a uma marcação oficial de SAR confirmado. Em produção, eu calibraria os thresholds com feedback de analistas, casos confirmados, falsos positivos e custo operacional da fila.
+- critérios das regras;
+- features comportamentais;
+- label utilizado no treino.
+
+O threshold de 0,9 foi escolhido na própria validação. Ele é uma referência estatística do experimento, não um corte operacional calibrado.
+
+## Limitações
+
+- Os mesmos clientes podem aparecer em treino e validação.
+- A tabela geográfica pode conter informações agregadas do período completo.
+- Outubro possui dados somente até o dia 4.
+- Não há conjunto independente de calibragem.
+- Não há conjunto final de teste.
+- O modelo PJ não foi treinado separadamente.
+- O label não utiliza resultado final de investigação.
+- Não existe avaliação de drift.
+- Não há backtesting com decisões humanas reais.
+
+## Explicabilidade e reprodução
+
+Os arquivos de importância e SHAP estão versionados como artefatos do experimento.
+
+O código público atual ainda não contém a geração integral de:
+
+- tabela de thresholds;
+- importância de features;
+- valores SHAP;
+- gráficos;
+- ranking completo;
+- serialização do modelo.
+
+Esses artefatos podem ser inspecionados, mas ainda não são integralmente regenerados pelo pipeline público.
+
+## Formulação para apresentação
+
+“Na T3, usei as regras para construir um label fraco e treinei um baseline XGBoost na unidade cliente-mês. Removi as colunas das regras para reduzir vazamento direto, mas reconheço a circularidade conceitual. As métricas são experimentais e o threshold ainda não representa calibragem operacional.”
+
+## Próximos passos
+
+- versionar a geração completa dos outputs;
+- incorporar SHAP ao código;
+- reconstruir features geográficas por janela temporal;
+- medir sobreposição de clientes;
+- separar treino, calibragem e teste;
+- calibrar thresholds por risco e capacidade operacional;
+- incorporar feedback investigativo;
+- monitorar drift, falsos positivos e falsos negativos.

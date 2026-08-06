@@ -1,172 +1,200 @@
 # Revisão crítica e defesa do case
 
-## Objetivo deste documento
+## Objetivo
 
-Este arquivo existe para me ajudar a defender as decisões do case durante a apresentação.
+Este documento organiza os principais argumentos técnicos para apresentação e entrevista.
 
-A ideia não é decorar respostas. A ideia é saber explicar o racional de forma simples, objetiva e segura.
+O objetivo não é decorar respostas, mas explicar decisões, evidências, limitações e trade-offs com clareza.
 
----
+## 1. Por que começar pela EDA?
 
-## 1. Por que comecei pela EDA?
+Em AML/FT, uma regra aplicada sobre dados incoerentes pode gerar falsos positivos, falsos negativos e perda de confiança operacional.
 
-Eu comecei pela EDA porque, em AML, uma regra ruim em cima de dado ruim gera falso positivo e perda de confiança.
+Antes de priorizar suspeitos, foram avaliados:
 
-Antes de procurar suspeitos, eu precisava validar:
-
-- estrutura da base;
-- volume por tabela;
+- estrutura e volume das tabelas;
 - tipos de transação;
-- nulos;
+- valores ausentes;
 - duplicatas;
 - datas;
 - valores inconsistentes;
-- relacionamento entre transações, clientes e merchants;
+- relacionamentos entre clientes, transações e merchants;
 - coerência por rail.
 
-A frase para explicar é:
+Formulação:
 
-“Antes de criar alerta, eu quis garantir que os dados faziam sentido. Em AML, qualidade de dado é parte do controle.”
-
----
+“Antes de criar alertas, validei se os dados faziam sentido. Em Financial Crime, qualidade de dados faz parte do controle.”
 
 ## 2. Por que separar por rail?
 
-Porque PIX, Card e Wire têm riscos diferentes.
+PIX, Card e Wire possuem campos, comportamentos e riscos diferentes.
 
-PIX tem mais relação com velocidade, cash-in/cash-out, mule account e conta de passagem.
+PIX exige atenção a:
 
-Card exige olhar para e-commerce, 3DS, MCC de risco, chargeback e card-present/card-not-present.
+- velocity;
+- cash-in e cash-out;
+- conta de passagem;
+- mule account;
+- concentração de contrapartes.
 
-Wire exige atenção maior para cross-border, país de destino, sanções e alto valor.
+Card exige atenção a:
 
-A frase para explicar é:
+- e-commerce;
+- 3DS e ECI;
+- MCC;
+- chargeback;
+- card-present e card-not-present.
 
-“Eu separei por rail porque comparar PIX, cartão e wire como se fossem iguais aumentaria falso positivo.”
+Wire exige atenção a:
 
----
+- cross-border;
+- país de destino;
+- sanções;
+- alto valor;
+- moeda e origem.
+
+Formulação:
+
+“Tratar todos os rails como equivalentes aumentaria ruído e reduziria a qualidade das regras.”
 
 ## 3. Por que usar regras antes de ML?
 
-Porque AML precisa de explicabilidade.
-
-Uma regra permite dizer:
+Regras permitem identificar:
 
 - o que aconteceu;
-- qual parâmetro foi usado;
-- por que aquilo é suspeito;
-- qual ação operacional faz sentido.
+- qual parâmetro foi utilizado;
+- por que o sinal é relevante;
+- qual evidência sustenta o alerta;
+- qual ação operacional pode ser avaliada.
 
-O ML entra depois para priorizar, mas a base explicável começa nas regras.
+O ML entra como camada complementar de priorização.
 
-A frase para explicar é:
+Formulação:
 
-“O ML ajuda a priorizar, mas a explicação operacional vem primeiro das regras.”
+“As regras oferecem explicabilidade e controle. O ML pode ajudar a ordenar a fila e capturar combinações não lineares.”
 
----
+## 4. Por que usar label fraco?
 
-## 4. Por que usar label fraco no ML?
+A base não possui label investigativo final.
 
-A base não tinha uma coluna oficial dizendo “fraude” ou “lavagem”.
+Foi adotada a aproximação:
 
-Então eu criei um label fraco usando a própria lógica AML:
+- cliente-mês com três ou mais regras: positivo;
+- demais casos: negativo no experimento.
 
-- cliente-mês com 3 ou mais regras disparadas = suspeito;
-- caso contrário = não suspeito.
+Esse label não representa:
 
-Isso não significa que o label é perfeito. Significa que ele é uma aproximação operacional para treinar um modelo de priorização.
+- crime confirmado;
+- fraude confirmada;
+- SAR aceito;
+- comunicação regulatória;
+- conclusão investigativa.
 
-A frase para explicar é:
+Formulação:
 
-“Como eu não tinha label investigativo final, usei as regras como proxy. O modelo aprende a priorizar casos parecidos com os que o motor de regras já considerou relevantes.”
+“Como não havia label final, usei as regras como proxy para construir um baseline de priorização.”
 
----
+## 5. Por que as métricas ficaram altas?
 
-## 5. Por que o resultado do ML ficou alto?
+O label fraco foi derivado de regras e as features capturam comportamentos próximos aos critérios dessas regras.
 
-Porque o label fraco foi criado a partir de regras, e as features também capturam parte desses comportamentos.
-
-Então o modelo não deve ser vendido como “modelo perfeito”.
+As colunas das regras e `rule_count` foram excluídas do treino, reduzindo leakage direto. Ainda permanece circularidade conceitual.
 
 A leitura correta é:
 
-- bom baseline;
-- boa capacidade de priorização;
-- útil para ranking;
-- precisa ser validado com histórico real de investigações;
-- precisa de calibragem antes de produção.
+- baseline experimental;
+- resultado útil para discutir ranking;
+- validação limitada à base sintética;
+- necessidade de calibragem e teste independente;
+- ausência de generalização automática.
 
-A frase para explicar é:
+Formulação:
 
-“O desempenho alto faz sentido porque é um baseline supervisionado por regras. Em produção, eu validaria com casos reais encerrados e calibraria threshold com o time de compliance.”
+“O desempenho alto é compatível com um label derivado das próprias regras. Por isso, não apresento as métricas como validação produtiva definitiva.”
 
----
+## 6. Como interpretar o threshold?
 
-## 6. Por que escolher threshold alto?
+O threshold de 0,9 apresentou a maior MCC na própria validação.
 
-Em AML, a fila de investigação é limitada.
+Ele não é um corte operacional definitivo.
 
-Se eu usar threshold muito baixo, gero volume alto e falso positivo.
+A escolha real deveria considerar:
 
-Se eu uso threshold mais alto, priorizo menos casos, mas com mais concentração de sinais.
+- capacidade de investigação;
+- severidade;
+- apetite de risco;
+- SLA;
+- custo de falso positivo;
+- custo de falso negativo;
+- cobertura por tipologia;
+- calibragem independente.
 
-A decisão depende da capacidade operacional do time.
+Formulação:
 
-A frase para explicar é:
-
-“O threshold não é só decisão estatística. Ele precisa considerar capacidade operacional, apetite de risco e SLA de investigação.”
-
----
+“O threshold é uma decisão estatística e operacional. Um corte só pode ser adotado depois de avaliar volume, risco e capacidade do time.”
 
 ## 7. Por que o SAR não afirma crime?
 
-Porque SAR ou comunicação de suspeita não é condenação.
+SAR ou comunicação de suspeita não equivale a condenação.
 
-O objetivo é registrar indícios objetivos, materialidade, timeline e motivo de suspeita.
+O documento organiza:
 
-A frase para explicar é:
+- fatos;
+- alertas;
+- materialidade;
+- timeline;
+- evidências;
+- limitações;
+- recomendação para revisão.
 
-“O SAR não conclui crime. Ele comunica uma suspeita fundamentada para avaliação pelas autoridades competentes.”
+Formulação:
 
----
+“O SAR registra uma suspeita fundamentada. A decisão final continua sujeita aos processos internos e às autoridades competentes.”
 
-## 8. Como defender o multi-agente?
+## 8. Como defender a T4 atual?
 
-O multi-agente não substitui o analista.
+A T4 atual é um protótipo determinístico de arquitetura multiagente.
 
-Ele organiza o fluxo:
+Ela demonstra:
 
-1. valida dados;
-2. detecta alertas;
-3. monta visão 360;
-4. estrutura SAR;
-5. revisa compliance e auditoria.
+- cinco papéis especializados;
+- prompts de referência;
+- execução sequencial;
+- passagem de contexto;
+- evidências;
+- revisão humana como princípio.
 
-A frase para explicar é:
+Ela ainda não demonstra:
 
-“O LLM entra como apoio de padronização e produtividade, mas com revisão humana e evidências rastreáveis.”
+- inferência real por LLM;
+- orquestrador completo;
+- eventos e filas executáveis;
+- checkpoints humanos implementados;
+- decisões `approve`, `revise` ou `escalate`;
+- integração com API;
+- operação produtiva.
 
----
+Formulação:
 
-## 9. Principais limitações do case
+“Na versão atual, construí uma simulação determinística dos cinco papéis. A evolução planejada inclui estado compartilhado, contratos tipados, handoffs, checkpoints humanos, logs e integração LLM opcional.”
 
-As principais limitações são:
+## 9. Principais limitações
 
-- base sintética ou de case, não produção real;
-- ausência de label oficial de investigação;
-- ausência de campo explícito de espécie/cash;
-- device e IP quase únicos, limitando análise de ring por reutilização;
-- modelo treinado com label fraco;
-- necessidade de validação regulatória final antes de produção.
+- Base integralmente sintética.
+- Ausência de label investigativo final.
+- Ausência de campo explícito de espécie.
+- Device e IP com baixa reutilização para análise de rings.
+- R17 ainda separada do motor principal.
+- Notebooks sem execução versionada.
+- Outputs de ML ainda não totalmente regeneráveis.
+- SHAP ainda sem geração pública completa.
+- T4 sem integração ativa com LLM.
+- Ausência de backtesting com decisões investigativas reais.
 
-A frase para explicar é:
+Formulação:
 
-“Eu tratei essas limitações de forma conservadora. Quando o dado não sustentava uma conclusão, eu não forcei a tipologia.”
+“Quando os dados ou o código não sustentam uma conclusão, registro a limitação em vez de forçar a tipologia.”
 
----
+## 10. Mensagem central
 
-## 10. Principal mensagem do case
-
-A mensagem central é:
-
-“Eu construí uma esteira AML completa: começo com qualidade de dados, passo por regras explicáveis, gero ranking de suspeitos, estruturo SAR, uso ML para priorização e proponho multi-agente para padronizar a operação.”
+“Este case demonstra como conectar qualidade de dados, regras explicáveis, priorização, investigação, SAR, ML experimental e uma arquitetura controlada de agentes. O valor está na rastreabilidade das decisões e na supervisão humana.”

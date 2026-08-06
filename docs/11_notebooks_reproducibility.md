@@ -1,28 +1,85 @@
-# Reforço dos notebooks 01 e 02
+# Estado dos notebooks e reprodutibilidade
 
 ## Objetivo
 
-Este enriquecimento reforça a reprodutibilidade do case nos notebooks iniciais.
+Os notebooks documentam o raciocínio técnico das quatro etapas do case:
 
-Os notebooks anteriores já existiam, mas eram mais enxutos. A melhoria adiciona uma sequência mais clara de execução para sustentar a apresentação técnica:
+- EDA;
+- regras;
+- machine learning;
+- arquitetura multiagente.
 
-- leitura da base Excel;
-- validação de abas, shapes, nulos e duplicatas;
+Eles devem ser apresentados atualmente como cadernos técnicos de demonstração, não como prova de reprodução integral do repositório.
+
+## Estado atual
+
+Os quatro notebooks possuem células de código, mas estão versionados:
+
+- sem contadores de execução;
+- sem outputs;
+- sem evidência de execução ponta a ponta.
+
+Os notebooks 01, 02 e 03 ainda apontam para o nome antigo da planilha.
+
+## Notebook 01 - EDA
+
+Demonstra:
+
+- leitura da base;
+- shapes;
+- nulos;
+- duplicatas;
 - coerência por rail;
-- sinais AML iniciais;
-- regras transacionais demonstrativas;
-- agregação cliente-mês;
-- validação dos outputs finais de suspeitos, SAR e catálogo de regras.
+- sinais AML iniciais.
 
-## Arquivos alterados
+A estrutura é útil para explicar a análise, mas o caminho da base precisa ser corrigido e a execução precisa ser validada.
 
-- `notebooks/01_eda.ipynb`
-- `notebooks/02_rules.ipynb`
+## Notebook 02 - Regras
 
-## Como explicar
+Apresenta regras demonstrativas e valida alguns outputs.
 
-“Eu reforcei os notebooks 01 e 02 para que a análise não fique só nos arquivos finais. Eles mostram o caminho técnico: primeiro leio e valido a base, depois aplico regras demonstrativas e comparo com os outputs finais. Isso ajuda a provar reprodutibilidade e raciocínio investigativo.”
+Ele não substitui o motor completo de regras. A lógica principal permanece em `src/rules.py` e no catálogo `src/alerts.py`.
 
-## Observação
+O arquivo `src/alerts.py` possui atualmente um erro de sintaxe que será tratado em incremento posterior.
 
-O notebook 02 não substitui todo o motor de regras em `src/rules.py` e `src/alerts.py`. Ele serve como caderno técnico de validação e explicação, enquanto os scripts concentram a lógica operacional mais completa.
+## Notebook 03 - Machine learning
+
+Demonstra:
+
+- leitura das tabelas;
+- criação de features;
+- treino do modelo;
+- cálculo básico de AUC-PR e AUC-ROC.
+
+Ele não regenera atualmente:
+
+- tabela completa de thresholds;
+- importância de features;
+- SHAP;
+- gráficos;
+- ranking completo;
+- arquivo do modelo.
+
+## Notebook 04 - Arquitetura multiagente
+
+Demonstra a execução do fluxo determinístico definido em `src/agents.py`.
+
+Ele não realiza chamadas a provedores externos de LLM.
+
+## Formulação correta
+
+Os notebooks reforçam a narrativa técnica e permitem inspecionar partes do processo.
+
+Ainda não é correto afirmar que eles provam reprodução integral ou regeneram todos os artefatos versionados.
+
+## Próximos passos
+
+- corrigir os caminhos da planilha;
+- corrigir `src/alerts.py`;
+- alinhar notebooks e scripts;
+- executar com Python 3.11;
+- registrar kernel e dependências;
+- gerar outputs de forma determinística;
+- validar os artefatos produzidos;
+- adicionar testes;
+- documentar um comando único de execução.
