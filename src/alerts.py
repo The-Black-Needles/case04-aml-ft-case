@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
-AlertLevel = Literal["transaction", "customer_month"    AlertRule(rule_id='R17', name='Geo-salto físico improvável', level='transaction', severity='Média-Alta', points=22, typology='geo-salto / account takeover / mule account', logic='Transações consecutivas do mesmo cliente com distância >= 500 km em <= 12h.', parameters='distance_km>=500; hours_between<=12; priorizar com flags de risco adicionais.', dynamic_threshold=True),
-]
+AlertLevel = Literal["transaction", "customer_month"]
 
 
 @dataclass(frozen=True)
@@ -55,11 +54,4 @@ ALERT_RULES: list[AlertRule] = [
     AlertRule(rule_id='M10', name='E-commerce sem 3DS repetido', level='customer_month', severity='Média', points=18, typology='fraude cartão / e-commerce sem autenticação', logic='ecommerce_no3ds_count>=2 no mês.', parameters='Mínimo 2 transações Card E-commerce CNP sem 3DS no mês.', dynamic_threshold=True),
     AlertRule(rule_id='M11', name='Risco técnico repetido de device/IP', level='customer_month', severity='Média', points=18, typology='device/IP ring / geo-salto', logic='ip_anomaly_proxy_count>=3 no mês.', parameters='Mínimo 3 eventos de IP anomaly, Proxy, VPN ou Tor no mês.', dynamic_threshold=True),
     AlertRule(rule_id='M12', name='Self-merchant no mês', level='customer_month', severity='Crítica', points=80, typology='self-merchant / circularidade', logic='self_merchant_count>=1 no mês.', parameters='Qualquer transação em que cliente coincide com owner_customer_id do merchant.', dynamic_threshold=False),
-    AlertRule(rule_id='R17', name='Geo-salto físico improvável', level='transaction', severity='Média-Alta', points=22, typology='geo-salto / account takeover / mule account', logic='Transações consecutivas do mesmo cliente com distância >= 500 km em <= 12h.', parameters='distance_km>=500; hours_between<=12; priorizar com flags de risco adicionais.', dynamic_threshold=True),
 ]
-
-
-# Nota operacional:
-# A regra R17 depende de cálculo sequencial por cliente usando latitude/longitude e timestamp.
-# O artefato outputs/t2_alert_system/04_geo_jump_candidates.csv foi gerado a partir da base
-# original com a fórmula de Haversine e janela de 12h.
