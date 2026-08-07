@@ -477,6 +477,15 @@ class CanonicalMLContractTests(
             ],
             0.7,
         )
+        self.assertEqual(
+            selection[
+                "selection_rule"
+            ],
+            (
+                "max_mcc_with_explicit_"
+                "operational_constraints"
+            ),
+        )
 
     def test_calibration_selects_before_test_evaluation(
         self,
@@ -542,6 +551,14 @@ class CanonicalMLContractTests(
                 "threshold_source"
             ],
             "calibration",
+        )
+        self.assertEqual(
+            result[
+                "selection"
+            ][
+                "selection_rule"
+            ],
+            "max_mcc_statistical_baseline",
         )
 
     def test_prevalence_baseline_uses_train_only(

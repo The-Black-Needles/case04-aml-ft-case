@@ -1019,11 +1019,20 @@ def select_operating_threshold(
 
     best = ordered.iloc[0]
 
+    operational_constraints_applied = (
+        max_alerts is not None
+        or min_recall is not None
+    )
+
+    selection_rule = (
+        "max_mcc_with_explicit_operational_constraints"
+        if operational_constraints_applied
+        else "max_mcc_statistical_baseline"
+    )
+
     return {
         "selection_split": "calibration",
-        "selection_rule": (
-            "max_mcc_with_explicit_operational_constraints"
-        ),
+        "selection_rule": selection_rule,
         "threshold": float(
             best["threshold"]
         ),
