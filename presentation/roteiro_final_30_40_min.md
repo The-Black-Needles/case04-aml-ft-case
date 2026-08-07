@@ -90,22 +90,25 @@ Destacar evolução:
 
 Mostrar:
 
-- `outputs/t3_ml/03_metrics_summary.csv`
-- `outputs/t3_ml/04_threshold_metrics.csv`
-- `outputs/t3_ml/05_feature_importance.csv`
+- `outputs/t3_ml_canonical/03_metrics_summary.csv`
+- `outputs/t3_ml_canonical/04_threshold_metrics_calibration.csv`
+- `outputs/t3_ml_canonical/10_chart_02_tradeoff_thresholds_calibracao.png`
+- `outputs/t3_ml_canonical/13_chart_05_shap_top_features.png`
 
 Fala:
 
-“Usei as regras para construir um label fraco e treinei um baseline XGBoost cliente-mês para PF. As colunas das regras foram removidas, mas permanece circularidade conceitual.”
+“Usei as regras M01–M12 para construir um label fraco e treinei um baseline XGBoost cliente-mês. Julho foi usado para treino, agosto para calibragem e setembro para teste temporal; outubro ficou fora por estar incompleto.”
 
 Destacar:
 
-- split temporal;
-- métricas de classe desbalanceada;
-- threshold de 0,9 como referência estatística;
-- ausência de calibragem e teste independentes;
-- outubro incompleto;
-- mesma entidade potencialmente em treino e validação.
+- AUC-PR de 0,3167 e AUC-ROC de 0,8269 no teste temporal;
+- precision 0,2096, recall 0,7773, FPR 0,2831 e MCC 0,2986;
+- threshold 0,3 como baseline estatístico de maior MCC na calibragem;
+- threshold não homologado operacionalmente;
+- 816 alertas em 2.498 registros no teste;
+- circularidade conceitual do label fraco;
+- mesma entidade pode aparecer em meses sucessivos;
+- SHAP e feature importance são reproduzíveis por código e pós-hoc.
 
 ## 7. T4 - Arquitetura multiagente - 5 minutos
 
@@ -135,12 +138,13 @@ Evolução:
 Limitações:
 
 - base sintética;
-- label fraco;
-- R17 não integrada;
-- notebooks sem execução versionada;
-- SHAP sem geração completa pública;
+- label fraco e circularidade conceitual;
+- R17 não integrada ao motor principal e fora do label canônico;
+- split temporal sem independência por entidade;
+- threshold estatístico sem homologação operacional;
+- T3 reproduzível como experimento, sem validação produtiva;
 - T4 sem inferência ativa por LLM;
-- ausência de backtesting real.
+- ausência de backtesting com decisões investigativas reais.
 
 Próximos passos:
 

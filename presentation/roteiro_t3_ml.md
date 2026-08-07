@@ -1,4 +1,4 @@
-# Roteiro T3 - Machine Learning explicável
+# Roteiro de apresentação - T3 Machine Learning
 
 ## Tempo sugerido
 
@@ -6,62 +6,60 @@
 
 ## Introdução
 
-“Depois de construir o motor de regras, usei seus resultados para criar um label fraco e estruturar um baseline de priorização cliente-mês.”
+“Depois de construir o motor de regras, usei os resultados das regras M01–M12 para criar um label fraco e estruturar um baseline de priorização cliente-mês.”
 
 ## Arquivos para mostrar
 
-- `outputs/t3_ml/03_metrics_summary.csv`
-- `outputs/t3_ml/04_threshold_metrics.csv`
-- `outputs/t3_ml/05_feature_importance.csv`
-- `outputs/t3_ml/06_shap_top_features.csv`
-- `outputs/t3_ml/07_validation_scored_top30.csv`
+- `outputs/t3_ml_canonical/03_metrics_summary.csv`
+- `outputs/t3_ml_canonical/04_threshold_metrics_calibration.csv`
+- `outputs/t3_ml_canonical/05_feature_importance_gain.csv`
+- `outputs/t3_ml_canonical/06_shap_summary_test.csv`
+- `outputs/t3_ml_canonical/07_test_scored_top30.csv`
+- `outputs/t3_ml_canonical/10_chart_02_tradeoff_thresholds_calibracao.png`
+- `outputs/t3_ml_canonical/13_chart_05_shap_top_features.png`
 - `docs/04_t3_ml_explicacao.md`
 
 ## Desenho experimental
 
-- Modelo: XGBoost.
-- População: PF.
 - Unidade: cliente-mês.
-- Label: três ou mais regras disparadas.
-- Treino: julho e agosto de 2025.
-- Validação: setembro e outubro de 2025.
+- Label: `weak_label` derivado exclusivamente de M01–M12.
+- R17: fora do label canônico.
+- Treino: julho/2025.
+- Calibragem: agosto/2025.
+- Teste temporal: setembro/2025.
+- Outubro/2025: excluído por mês incompleto.
+- Features: 5 categóricas + 16 numéricas.
 - `random_state=42`.
 
 Fala:
 
-“O label não representa fraude ou lavagem confirmada. Ele funciona como proxy experimental de relevância para a fila.”
-
-## Leakage e circularidade
-
-Fala:
-
-“Removi do treino as colunas das regras e `rule_count`, reduzindo vazamento direto. Mesmo assim, existe circularidade conceitual porque o label e as features representam comportamentos próximos.”
+“Separei treino, calibragem e teste por mês. Isso é melhor que um split aleatório para este case, mas não elimina a sobreposição de entidades entre meses.”
 
 ## Métricas
 
-Resultados registrados:
+Resultados no teste temporal:
 
-- AUC-PR: 0,9416.
-- AUC-ROC: 0,9970.
-- Precision: 0,9241.
-- Recall: 0,7725.
-- FPR: 0,0031.
-- MCC: 0,8382.
+- AUC-PR: 0,3167.
+- AUC-ROC: 0,8269.
+- Precision: 0,2096.
+- Recall: 0,7773.
+- FPR: 0,2831.
+- MCC: 0,2986.
+- 816 alertas em 2.498 registros.
 
 Fala:
 
-“As métricas são altas, mas devem ser interpretadas no contexto do label fraco e da base sintética. Elas não validam um modelo produtivo.”
+“Essas métricas mostram capacidade moderada de aproximar o label fraco. Como o rótulo deriva das regras, não trato o resultado como prova independente de detecção nem como validação produtiva.”
 
 ## Threshold
 
 Fala:
 
-“O threshold de 0,9 apresentou a maior MCC na própria validação. Portanto, ele é uma referência estatística, não um corte operacional calibrado.”
+“Na calibragem de agosto, comparei thresholds de 0,1 a 0,9. O threshold 0,3 teve o maior MCC pela regra `max_mcc_statistical_baseline`, mas não foi homologado operacionalmente.”
 
 Explicar que a decisão real depende de:
 
 - capacidade da fila;
-- severidade;
 - SLA;
 - custo de falso positivo;
 - custo de falso negativo;
@@ -72,18 +70,19 @@ Explicar que a decisão real depende de:
 
 Fala:
 
-“Os artefatos de importância e SHAP mostram como a explicabilidade foi analisada no experimento. A geração completa desses outputs ainda precisa ser incorporada ao código público.”
+“Feature importance por gain e SHAP são regeneráveis por código. O SHAP foi calculado nas 2.498 linhas do teste temporal e é usado como explicabilidade pós-hoc, sem participar do treino ou da seleção do threshold.”
 
 ## Limitações
 
-- mesmos clientes podem aparecer em treino e validação;
-- possível agregação geográfica do período completo;
-- outubro incompleto;
-- ausência de conjunto de calibragem;
-- ausência de teste final;
-- ausência de feedback investigativo;
-- modelo PJ não treinado.
+- base integralmente sintética;
+- label fraco e circularidade conceitual;
+- split temporal sem independência por entidade;
+- outubro excluído por mês incompleto;
+- threshold estatístico sem homologação operacional;
+- ausência de feedback investigativo real e independente;
+- modelo PJ separado não sustentado pelos dados atuais;
+- explicabilidade pós-hoc não implica causalidade.
 
 ## Fechamento
 
-“O ML agrega como camada complementar de priorização. Regras preservam a explicação operacional, enquanto o modelo ajuda a ordenar combinações de sinais.”
+“O modelo complementa as regras como camada experimental de priorização. Regras continuam sendo o núcleo explicável, e qualquer uso operacional exigiria calibragem, validação independente e revisão humana.”

@@ -235,72 +235,68 @@ A unidade de modelagem escolhida foi cliente-mês.
 
 Essa granularidade permite capturar padrões acumulados que não aparecem em uma única transação.
 
-O label fraco foi definido como:
+O experimento canônico utiliza um `weak_label` derivado exclusivamente das regras determinísticas M01–M12. A R17 permanece fora do label canônico.
 
-`suspicious_label = 1` quando `rule_count >= 3`.
+O modelo é um XGBoost com `random_state=42`, estruturado com 5 features categóricas e 16 numéricas.
 
-Foi estruturado um pipeline XGBoost para PF com `random_state=42`.
+O desenho temporal separa explicitamente:
 
-O split temporal foi:
+- treino: julho/2025, com 2.499 registros e 236 positivos;
+- calibragem: agosto/2025, com 2.499 registros e 254 positivos;
+- teste temporal: setembro/2025, com 2.498 registros e 220 positivos;
+- outubro/2025: excluído do experimento canônico por ser mês incompleto.
 
-- treino: julho e agosto de 2025;
-- validação: setembro e outubro de 2025.
+Na calibragem, os thresholds entre 0,1 e 0,9 foram comparados pela regra `max_mcc_statistical_baseline`.
 
-A base de treino possui:
+O threshold 0,3 apresentou o maior MCC nessa grade. Ele é uma referência estatística do experimento e não foi homologado operacionalmente.
 
-- 4.998 linhas;
-- 422 positivos;
-- taxa positiva aproximada de 8,44%.
+No teste temporal de setembro/2025, os resultados foram:
 
-A base de validação possui:
-
-- 4.109 linhas;
-- 189 positivos;
-- taxa positiva aproximada de 4,60%.
-
-Os artefatos versionados registram:
-
-- AUC-PR: 0,9416;
-- AUC-ROC: 0,9970;
-- threshold com maior MCC na validação: 0,9;
-- precision: 0,9241;
-- recall: 0,7725;
-- FPR: 0,0031;
-- MCC: 0,8382.
+- AUC-PR: 0,3167;
+- AUC-ROC: 0,8269;
+- precision: 0,2096;
+- recall: 0,7773;
+- FPR: 0,2831;
+- MCC: 0,2986;
+- 816 alertas em 2.498 registros;
+- alert rate aproximado: 32,67%.
 
 ### 6.1 Interpretação correta
 
-O desempenho elevado é esperado porque o label fraco deriva de regras construídas sobre variáveis próximas às features usadas pelo modelo.
+As métricas medem a capacidade do modelo de aproximar o label fraco derivado das regras. Elas não constituem prova independente de atividade ilícita, não equivalem a decisão investigativa final e não representam validação produtiva.
 
-As colunas de regras e `rule_count` foram excluídas do treino, evitando vazamento direto do rótulo.
+As colunas das regras e a contagem agregada de regras não são usadas diretamente como preditores, reduzindo leakage direto.
 
-Isso não elimina a circularidade conceitual entre as variáveis comportamentais e o label fraco.
+Ainda permanece circularidade conceitual porque o label deriva de regras e várias features representam conceitos comportamentais correlatos aos critérios dessas regras.
 
 Outras limitações relevantes:
 
-- os mesmos clientes podem aparecer em treino e validação;
-- a tabela geográfica pode agregar informações de todo o período;
-- outubro contém apenas dados até o dia 4;
-- a comparação por profissão utiliza o grupo do próprio mês;
-- o threshold foi comparado na própria validação;
-- não existe conjunto independente para calibragem;
+- o split é temporal, mas as mesmas entidades podem aparecer em meses sucessivos;
+- a independência entre clientes não é garantida;
+- outubro foi excluído por mês incompleto;
+- features de comparação por grupo são construídas na granularidade mensal;
+- o threshold 0,3 foi selecionado na calibragem, mas sem restrições operacionais;
 - o label não representa caso confirmado;
 - o label não representa SAR aceito;
 - o label não representa decisão investigativa final.
 
-O threshold de 0,9 deve ser tratado como referência estatística do experimento, e não como decisão operacional definitiva.
+A homologação de um threshold operacional precisaria considerar capacidade da fila, SLA, custo de falso positivo, custo de falso negativo, cobertura por tipologia e apetite a risco.
 
 ### 6.2 Explicabilidade
 
-Existem artefatos versionados de:
+A explicabilidade canônica é regenerável por código.
 
-- importância nativa do XGBoost;
-- valores SHAP médios absolutos;
-- ranking de casos da validação.
+Os artefatos versionados incluem:
 
-Entretanto, o código público atual ainda não contém a geração completa desses artefatos.
+- feature importance nativa do XGBoost por `gain`;
+- resumo SHAP calculado sobre as 2.498 linhas do teste temporal;
+- ranking dos 30 maiores scores do teste;
+- cinco gráficos canônicos em português;
+- manifests com hashes dos artefatos.
 
-Portanto, a explicabilidade está documentada nos outputs, mas sua reprodução integral ainda precisa ser incorporada ao pipeline.
+SHAP e feature importance são análises pós-hoc. Elas não participam do treino nem da seleção do threshold, não demonstram causalidade e devem ser interpretadas junto às limitações do label fraco e do split temporal.
+
+A fonte versionada da T3 está em `outputs/t3_ml_canonical/`.
 
 ## 7. Protótipo de arquitetura multiagente
 
@@ -358,23 +354,24 @@ Principais limitações:
 - ausência de campo explícito de espécie;
 - geolocalização sujeita a ruído;
 - R17 separada do motor principal;
-- notebooks ainda sem execução versionada;
-- caminhos antigos em parte do código;
-- geração integral dos outputs de ML ainda não consolidada;
-- ausência de calibragem com feedback operacional;
-- ausência de modelo PJ separado;
+- notebooks com escopos distintos de reprodutibilidade; o Notebook 03 está alinhado ao pipeline canônico de ML;
+- persistência de caminhos legados fora da T3 ainda deve ser tratada por incremento próprio quando aplicável;
+- outputs canônicos de ML, SHAP e gráficos regeneráveis por código, sem equivaler a validação produtiva;
+- threshold estatístico sem homologação com capacidade e feedback operacional;
+- split temporal sem independência por entidade;
+- ausência de modelo PJ separado sustentado pelos dados atuais;
 - protótipo multiagente sem integração ativa com LLM.
 
 Próximos passos técnicos:
 
 1. Corrigir caminhos e contratos de execução.
 2. Integrar a R17 ao motor principal.
-3. Executar os notebooks ponta a ponta.
-4. Versionar a geração de métricas, thresholds, SHAP e gráficos.
-5. Avaliar leakage temporal e sobreposição de entidades.
-6. Separar treino, calibragem e teste.
-7. Calibrar thresholds por capacidade operacional e risco.
-8. Evoluir modelos PF e PJ conforme disponibilidade cadastral.
+3. Manter notebooks e scripts alinhados aos contratos versionados.
+4. Preservar a regeneração determinística de métricas, thresholds, SHAP e gráficos.
+5. Avaliar splits adicionais com independência por entidade e menor circularidade do label.
+6. Validar o baseline com feedback investigativo mais independente quando disponível.
+7. Homologar thresholds por capacidade operacional, custos de erro e apetite a risco.
+8. Separar PF e PJ somente quando os dados cadastrais sustentarem modelos independentes.
 9. Monitorar drift, estabilidade e falsos positivos.
 10. Integrar listas externas apenas em ambiente controlado.
 11. Conectar a arquitetura de agentes a um provedor de LLM somente com guardrails, logs e aprovação humana.

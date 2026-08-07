@@ -84,13 +84,15 @@ Resposta curta:
 
 ---
 
-## 9. Por que as métricas ficaram altas?
+## 9. Como interpretar as métricas do ML?
 
-Porque o label vem das regras e as features capturam comportamentos semelhantes.
+O desempenho deve ser lido como capacidade de aproximar um label fraco derivado das regras, não como prova independente de atividade ilícita.
+
+No teste temporal, o modelo registrou AUC-PR de 0,3167 e AUC-ROC de 0,8269. O split é temporal, mas não independente por entidade, e permanece circularidade conceitual entre o label e parte das features.
 
 Resposta curta:
 
-“As métricas altas são esperadas em um baseline com label fraco baseado em regras. Eu não venderia isso como modelo perfeito.”
+“Eu interpreto as métricas como desempenho experimental na aproximação do label fraco. Elas não validam produção nem provam detecção independente de ilícito.”
 
 ---
 

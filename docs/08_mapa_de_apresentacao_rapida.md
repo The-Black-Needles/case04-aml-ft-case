@@ -64,18 +64,20 @@ Pontos para discutir:
 
 Abrir:
 
-- `outputs/t3_ml/03_metrics_summary.csv`
-- `outputs/t3_ml/04_threshold_metrics.csv`
-- `outputs/t3_ml/05_feature_importance.csv`
-- `outputs/t3_ml/06_shap_top_features.csv`
+- `outputs/t3_ml_canonical/03_metrics_summary.csv`
+- `outputs/t3_ml_canonical/04_threshold_metrics_calibration.csv`
+- `outputs/t3_ml_canonical/05_feature_importance_gain.csv`
+- `outputs/t3_ml_canonical/06_shap_summary_test.csv`
+- `outputs/t3_ml_canonical/10_chart_02_tradeoff_thresholds_calibracao.png`
+- `outputs/t3_ml_canonical/13_chart_05_shap_top_features.png`
 
 Fala:
 
-“O XGBoost foi estruturado como baseline cliente-mês com label fraco. As métricas são altas, mas devem ser interpretadas à luz da circularidade do label, do split e das limitações de reprodução.”
+“O XGBoost foi estruturado como baseline cliente-mês com label fraco derivado das regras M01–M12. Julho foi usado para treino, agosto para calibragem e setembro para teste temporal; outubro foi excluído por estar incompleto. No teste, o AUC-PR foi 0,3167 e o AUC-ROC 0,8269.”
 
 Ponto de transparência:
 
-“Os artefatos de SHAP estão versionados, mas sua geração completa ainda precisa ser incorporada ao código público.”
+“O threshold 0,3 é apenas o baseline estatístico de maior MCC na calibragem e não foi homologado operacionalmente. O split é temporal, mas não independente por entidade. Feature importance, SHAP e gráficos são reproduzíveis por código e servem como explicabilidade pós-hoc, não como prova de causalidade ou validação produtiva.”
 
 ## 6. Arquitetura de agentes
 
