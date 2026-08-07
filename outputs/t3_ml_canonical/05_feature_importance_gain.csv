@@ -1,0 +1,67 @@
+feature,importance_type,importance
+numeric__confirmed_count,gain,137.16078186
+numeric__zscore_vs_peer_total,gain,35.601852417
+numeric__ratio_to_peer_median_total,gain,27.0540981293
+numeric__avg_amount,gain,26.9846019745
+numeric__card_count,gain,25.713388443
+categorical__state_RS,gain,24.5594844818
+categorical__declared_occupation_Dentist,gain,23.8379211426
+numeric__pix_count,gain,22.9604873657
+numeric__peer_group_size,gain,22.673084259
+categorical__declared_occupation_Lawyer,gain,22.0210704803
+numeric__wire_count,gain,21.4401664734
+categorical__kyc_tier_L2,gain,19.9461746216
+categorical__declared_occupation_Software Engineer,gain,19.6945266724
+categorical__declared_occupation_Driver,gain,19.4858226776
+categorical__kyc_tier_L3,gain,18.8285160065
+categorical__declared_occupation_Nurse,gain,18.3164596558
+categorical__kyc_tier_L1,gain,17.9405708313
+categorical__state_AM,gain,17.4789085388
+numeric__max_amount,gain,17.195936203
+categorical__state_CE,gain,17.0925235748
+categorical__state_PR,gain,17.0231704712
+numeric__months_since_registration,gain,17.0020027161
+numeric__kyc_risk_score,gain,16.9548377991
+categorical__declared_occupation_Chef,gain,16.7685718536
+numeric__annual_income_brl,gain,16.430896759
+categorical__declared_occupation_Accountant,gain,16.1403923035
+numeric__peer_total_amount_median,gain,16.0946350098
+categorical__declared_occupation_Store Owner,gain,15.9357757568
+numeric__peer_total_amount_mean,gain,15.8227348328
+categorical__city_Campinas,gain,15.5942850113
+categorical__state_PE,gain,15.2061843872
+numeric__peer_total_amount_std,gain,15.1222400665
+categorical__state_MG,gain,14.3810911179
+categorical__beneficial_owner_Yes,gain,14.0482854843
+categorical__state_PA,gain,14.0297203064
+categorical__state_DF,gain,13.5316009521
+categorical__city_Manaus,gain,13.3104743958
+categorical__declared_occupation_Teacher,gain,13.1814489365
+numeric__age,gain,13.1429662704
+categorical__beneficial_owner_No,gain,12.5249433517
+categorical__state_SP,gain,12.454621315
+categorical__declared_occupation_Freelancer,gain,12.3609952927
+categorical__city_Curitiba,gain,12.0409069061
+categorical__declared_occupation_Designer,gain,11.0610532761
+categorical__state_SC,gain,10.3024673462
+categorical__city_Belo Horizonte,gain,9.89247703552
+categorical__declared_occupation_Entrepreneur,gain,9.2702255249
+categorical__state_GO,gain,9.25936889648
+categorical__declared_occupation_Mechanic,gain,8.32714176178
+categorical__state_RN,gain,6.62419128418
+categorical__city_Fortaleza,gain,6.26037883759
+categorical__state_BA,gain,4.98956871033
+categorical__city_Belém,gain,0
+categorical__city_Brasília,gain,0
+categorical__city_Florianópolis,gain,0
+categorical__city_Goiânia,gain,0
+categorical__city_Natal,gain,0
+categorical__city_Porto Alegre,gain,0
+categorical__city_Recife,gain,0
+categorical__city_Rio de Janeiro,gain,0
+categorical__city_Salvador,gain,0
+categorical__city_São Paulo,gain,0
+categorical__declared_occupation_Consultant,gain,0
+categorical__declared_occupation_Student,gain,0
+categorical__declared_occupation_Trader,gain,0
+categorical__state_RJ,gain,0

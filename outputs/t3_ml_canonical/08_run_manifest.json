@@ -1,0 +1,111 @@
+{
+  "artifacts": {
+    "00_ml_canonical_summary.md": "bfdd916e284de36d24f822d8e41a24665de7309e4a9269d18b7614997b992bca",
+    "01_canonical_model_dataset.csv": "5681b22a38e7e947b25f4d6fc5e718f1a45297ba99419d098b78eba86ab91773",
+    "02_split_distribution.csv": "b76d3732dbf9b8bf7cb962fb97b2d40562c0e3e74de704239ad71231a62ceeae",
+    "03_metrics_summary.csv": "b43bc5b7dbac41c41e825d03637d270940e2e31d78cd8e85b2c4b0298cdf00d6",
+    "04_threshold_metrics_calibration.csv": "da71d43a61a164e2c12bd5e22336a5d6af420715fffc351b6e5dda9c58cf5bc3",
+    "05_feature_importance_gain.csv": "d992f1873b4ce219cf929454c5d96bea7757319a25b6db2e264b7e7bd00fcf4f",
+    "06_shap_summary_test.csv": "565a80062dda0cd2d49a1c6d25288b534698035924115c8435e9baf3545e35bd",
+    "07_test_scored_top30.csv": "62c853dec2054eae62aefe8080aef4644c416c9826c483d5a80aa6472e98221a"
+  },
+  "data": {
+    "canonical_rows": 7496,
+    "input_path": "outputs/t1_suspects/04_client_month_alerts_all.csv",
+    "input_sha256": "aadcac57102fff0052ac41ecd0372fad9e64d7009fc85e38e8a069ec79d6e3b8",
+    "label_column": "weak_label",
+    "label_source": "deterministic_rules_M01_M12",
+    "r17_in_label": false,
+    "synthetic": true,
+    "weak_label": true
+  },
+  "explainability": {
+    "feature_importance_type": "gain",
+    "shap_split": "test",
+    "shap_used_for_threshold_selection": false,
+    "shap_used_for_training": false
+  },
+  "governance": {
+    "human_review_required": true,
+    "legacy_t3_outputs_reused": false,
+    "model_persisted": false,
+    "production_validation_claimed": false
+  },
+  "model": {
+    "algorithm": "XGBoost",
+    "categorical_features": [
+      "declared_occupation",
+      "kyc_tier",
+      "state",
+      "city",
+      "beneficial_owner"
+    ],
+    "numeric_features": [
+      "age",
+      "months_since_registration",
+      "annual_income_brl",
+      "kyc_risk_score",
+      "avg_amount",
+      "max_amount",
+      "confirmed_count",
+      "pix_count",
+      "card_count",
+      "wire_count",
+      "peer_group_size",
+      "peer_total_amount_median",
+      "peer_total_amount_mean",
+      "peer_total_amount_std",
+      "ratio_to_peer_median_total",
+      "zscore_vs_peer_total"
+    ],
+    "random_state": 42,
+    "scale_pos_weight": 9.588983050847459
+  },
+  "pipeline": "canonical_customer_month_xgboost",
+  "runtime": {
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "python": "3.11.14",
+    "scikit_learn": "1.5.2",
+    "shap": "0.46.0",
+    "xgboost": "2.1.2"
+  },
+  "schema_version": 1,
+  "splits": [
+    {
+      "month": "2025-07",
+      "negatives": 2263,
+      "positives": 236,
+      "prevalence": 0.09443777511004402,
+      "rows": 2499,
+      "split": "train",
+      "unique_customers": 2499
+    },
+    {
+      "month": "2025-08",
+      "negatives": 2245,
+      "positives": 254,
+      "prevalence": 0.101640656262505,
+      "rows": 2499,
+      "split": "calibration",
+      "unique_customers": 2499
+    },
+    {
+      "month": "2025-09",
+      "negatives": 2278,
+      "positives": 220,
+      "prevalence": 0.08807045636509207,
+      "rows": 2498,
+      "split": "test",
+      "unique_customers": 2498
+    }
+  ],
+  "threshold": {
+    "operational_constraints_applied": false,
+    "operationally_homologated": false,
+    "selection_rule": "max_mcc_statistical_baseline",
+    "selection_split": "calibration",
+    "value": 0.3
+  },
+  "title": "AML/FT & Financial Crime Analytics: Data, Machine Learning and AI Agents"
+}

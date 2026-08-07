@@ -1,0 +1,67 @@
+feature,mean_abs_shap,mean_shap,split,rows_explained
+numeric__confirmed_count,0.751047730446,-0.504041492939,test,2498
+numeric__zscore_vs_peer_total,0.703007400036,-0.497639894485,test,2498
+numeric__ratio_to_peer_median_total,0.480067938566,-0.368345230818,test,2498
+numeric__avg_amount,0.395911127329,-0.0735837295651,test,2498
+numeric__card_count,0.308463931084,-0.201083570719,test,2498
+numeric__pix_count,0.27772834897,-0.161414727569,test,2498
+numeric__annual_income_brl,0.277284830809,-0.123896062374,test,2498
+numeric__max_amount,0.200851947069,-0.149988517165,test,2498
+numeric__peer_total_amount_median,0.155072644353,-0.133246794343,test,2498
+numeric__kyc_risk_score,0.131091341376,-0.0680364742875,test,2498
+numeric__months_since_registration,0.122092373669,-0.069426625967,test,2498
+numeric__peer_group_size,0.115555875003,-0.0228069499135,test,2498
+numeric__peer_total_amount_std,0.0944799408317,-0.0906293168664,test,2498
+numeric__peer_total_amount_mean,0.0605889111757,-0.0480021573603,test,2498
+numeric__age,0.0571870952845,-0.0414380505681,test,2498
+categorical__declared_occupation_Chef,0.0377133563161,-0.00736486166716,test,2498
+categorical__state_PR,0.0367202609777,-0.00594262313098,test,2498
+numeric__wire_count,0.0361164957285,-0.0102590965107,test,2498
+categorical__state_CE,0.022737218067,-0.00408204644918,test,2498
+categorical__state_SC,0.0208504665643,-0.00351280253381,test,2498
+categorical__declared_occupation_Teacher,0.0175839867443,-0.00424081273377,test,2498
+categorical__kyc_tier_L1,0.01298005227,-0.00655217608437,test,2498
+categorical__declared_occupation_Designer,0.0118286097422,-0.00385968526825,test,2498
+categorical__beneficial_owner_Yes,0.0113427881151,-0.00219524209388,test,2498
+categorical__state_MG,0.0108299423009,-0.00332579039969,test,2498
+categorical__declared_occupation_Driver,0.0105397645384,-0.00209047156386,test,2498
+categorical__state_PE,0.0102377608418,-0.00297021470033,test,2498
+categorical__declared_occupation_Software Engineer,0.0084398528561,-0.00185649539344,test,2498
+categorical__kyc_tier_L2,0.00791004765779,-0.00368927582167,test,2498
+categorical__state_AM,0.00784236099571,-0.00340435188264,test,2498
+categorical__declared_occupation_Nurse,0.00716365780681,-0.00225698831491,test,2498
+categorical__state_RS,0.00665595103055,-0.00281025352888,test,2498
+categorical__city_Curitiba,0.00528489984572,-0.000660745601635,test,2498
+categorical__kyc_tier_L3,0.0051499675028,-0.00134106294718,test,2498
+categorical__declared_occupation_Store Owner,0.00459400052205,-0.000669133209158,test,2498
+categorical__declared_occupation_Freelancer,0.00445392914116,-0.0006997755263,test,2498
+categorical__state_BA,0.00445309607312,-0.000667002343107,test,2498
+categorical__declared_occupation_Entrepreneur,0.00409462675452,-0.000304895744193,test,2498
+categorical__declared_occupation_Accountant,0.00407422473654,-0.000992413028143,test,2498
+categorical__state_PA,0.00391856860369,-0.00213704956695,test,2498
+categorical__city_Manaus,0.00389503734186,-0.000595074729063,test,2498
+categorical__state_DF,0.00378975481726,-0.000786016171332,test,2498
+categorical__city_Fortaleza,0.00365338264965,-0.00052231218433,test,2498
+categorical__beneficial_owner_No,0.00361503311433,-0.000667322601657,test,2498
+categorical__declared_occupation_Dentist,0.00324874720536,-0.00108580419328,test,2498
+categorical__declared_occupation_Mechanic,0.00234580086544,-7.90755730122e-05,test,2498
+categorical__city_Campinas,0.00219345884398,-0.000303970125969,test,2498
+categorical__state_SP,0.00190074334387,-0.000527839001734,test,2498
+categorical__state_RN,0.0017656829441,-0.000540574081242,test,2498
+categorical__state_GO,0.00167315418366,-0.000432339176768,test,2498
+categorical__declared_occupation_Lawyer,0.00153713417239,-0.000978403026238,test,2498
+categorical__city_Belo Horizonte,0.000640544574708,-0.00013326262706,test,2498
+categorical__city_Belém,0,0,test,2498
+categorical__city_Brasília,0,0,test,2498
+categorical__city_Florianópolis,0,0,test,2498
+categorical__city_Goiânia,0,0,test,2498
+categorical__city_Natal,0,0,test,2498
+categorical__city_Porto Alegre,0,0,test,2498
+categorical__city_Recife,0,0,test,2498
+categorical__city_Rio de Janeiro,0,0,test,2498
+categorical__city_Salvador,0,0,test,2498
+categorical__city_São Paulo,0,0,test,2498
+categorical__declared_occupation_Consultant,0,0,test,2498
+categorical__declared_occupation_Student,0,0,test,2498
+categorical__declared_occupation_Trader,0,0,test,2498
+categorical__state_RJ,0,0,test,2498
