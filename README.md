@@ -38,18 +38,36 @@ A regra `R17`, de geo-salto físico improvável, foi adicionada posteriormente c
 
 ### T3 - Machine learning
 
-Foi estruturado um baseline XGBoost para PF na unidade cliente-mês:
+Foi estruturado um baseline canônico XGBoost na unidade cliente-mês:
 
-- label fraco baseado em três ou mais regras disparadas;
-- split temporal;
+- base integralmente sintética;
+- `weak_label` derivado exclusivamente das regras determinísticas M01–M12;
+- `R17` fora do label canônico;
+- treino em julho/2025;
+- calibragem e seleção estatística de threshold em agosto/2025;
+- teste temporal em setembro/2025;
+- outubro/2025 excluído por mês incompleto;
+- 5 features categóricas e 16 numéricas;
 - `random_state=42`;
 - métricas de AUC-PR, AUC-ROC, precision, recall, FPR e MCC;
-- tabela de thresholds;
-- artefatos de importância de features e SHAP.
+- grid de thresholds entre 0,1 e 0,9;
+- feature importance por gain e SHAP reproduzíveis por código.
 
-Os artefatos versionados registram AUC-PR de 0,9416 e AUC-ROC de 0,9970. Esses valores devem ser interpretados com cautela, pois o label fraco foi derivado das próprias regras e o conjunto de validação também foi usado para comparar thresholds.
+Na calibragem, a regra `max_mcc_statistical_baseline` selecionou o threshold 0,3. Esse valor não foi homologado operacionalmente.
 
-A geração completa dos artefatos de SHAP e dos demais outputs de ML ainda precisa ser incorporada ao pipeline público.
+No teste temporal, os resultados foram:
+
+- AUC-PR: 0,3167;
+- AUC-ROC: 0,8269;
+- precision: 0,2096;
+- recall: 0,7773;
+- FPR: 0,2831;
+- MCC: 0,2986;
+- 816 alertas em 2.498 registros, ou aproximadamente 32,67% da fila.
+
+Essas métricas medem a capacidade de aproximar um label fraco derivado de regras. Elas não provam atividade ilícita, não constituem validação produtiva e não eliminam a circularidade conceitual entre label e features. O split é temporal, mas não é independente por entidade, pois os mesmos clientes podem aparecer em meses sucessivos.
+
+A geração dos outputs tabulares, feature importance, SHAP e gráficos canônicos está versionada e reproduzível por código.
 
 ### T4 - Arquitetura multiagente
 
@@ -68,7 +86,7 @@ O script preserva prompts de referência, passagem estruturada de contexto, refe
 1. `outputs/eda_day1/` - EDA, qualidade e coerência por rail.
 2. `outputs/t1_suspects/` - rankings, timeline, SAR e grafo de entidades.
 3. `outputs/t2_alert_system/` - catálogo de regras e candidatos de geo-salto.
-4. `outputs/t3_ml/` - dataset modelado, métricas, thresholds e explicabilidade.
+4. `outputs/t3_ml_canonical/` - dataset canônico cliente-mês, splits, métricas, thresholds, explicabilidade, ranking de teste e gráficos reproduzíveis.
 5. `outputs/t4_agents/` - prompts, diagrama e simulação determinística.
 6. `reports/AML_FT_Case_Report.md` - relatório técnico consolidado.
 7. `presentation/roteiro_final_30_40_min.md` - roteiro de apresentação.
@@ -87,11 +105,12 @@ O script preserva prompts de referência, passagem estruturada de contexto, refe
 
 - A base é sintética e não contém dados reais de clientes.
 - Os principais artefatos analíticos estão versionados.
-- Os notebooks funcionam atualmente como cadernos técnicos de demonstração.
-- A reprodução integral de todos os outputs ainda está em consolidação.
-- O modelo utiliza label fraco e não equivale a uma decisão investigativa confirmada.
-- O threshold de 0,9 não representa calibragem operacional definitiva.
-- A R17 permanece separada do motor principal.
+- O Notebook 03 está alinhado ao pipeline canônico de ML; os demais notebooks continuam com escopos próprios de demonstração e validação.
+- Os outputs canônicos da T3, incluindo SHAP e gráficos, são regeneráveis pelo código versionado.
+- O modelo utiliza label fraco derivado de M01–M12 e não equivale a uma decisão investigativa confirmada.
+- O threshold 0,3 é apenas o baseline estatístico `max_mcc_statistical_baseline` selecionado na calibragem e não representa calibragem operacional definitiva.
+- O split é temporal, mas não independente por entidade.
+- A R17 permanece separada do motor principal e fora do label canônico.
 - A T4 é uma simulação determinística, sem integração ativa com LLM.
 - Nenhum componente deve ser interpretado como solução pronta para produção ou decisão automática de compliance.
 

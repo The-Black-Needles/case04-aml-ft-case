@@ -94,44 +94,66 @@ Formulação:
 
 “Como não havia label final, usei as regras como proxy para construir um baseline de priorização.”
 
-## 5. Por que as métricas ficaram altas?
+## 5. Como interpretar as métricas?
 
-O label fraco foi derivado de regras e as features capturam comportamentos próximos aos critérios dessas regras.
+O baseline canônico possui desempenho moderado na aproximação do label fraco.
 
-As colunas das regras e `rule_count` foram excluídas do treino, reduzindo leakage direto. Ainda permanece circularidade conceitual.
+No teste temporal de setembro/2025:
+
+- AUC-PR: 0,3167;
+- AUC-ROC: 0,8269;
+- precision: 0,2096;
+- recall: 0,7773;
+- FPR: 0,2831;
+- MCC: 0,2986;
+- 816 alertas em 2.498 registros.
+
+O ponto central não é tratar esses números como evidência de detecção independente de ilícito.
+
+O label fraco foi derivado das regras M01–M12 e as features capturam conceitos comportamentais correlatos. As colunas das regras e a contagem agregada não entram diretamente no treino, reduzindo leakage direto, mas permanece circularidade conceitual.
+
+Além disso, o split é temporal, mas as mesmas entidades aparecem em meses sucessivos.
 
 A leitura correta é:
 
 - baseline experimental;
-- resultado útil para discutir ranking;
+- resultado útil para discutir priorização;
 - validação limitada à base sintética;
-- necessidade de calibragem e teste independente;
-- ausência de generalização automática.
+- teste temporal separado da calibragem;
+- ausência de independência entre entidades;
+- ausência de generalização automática;
+- ausência de validação produtiva.
 
 Formulação:
 
-“O desempenho alto é compatível com um label derivado das próprias regras. Por isso, não apresento as métricas como validação produtiva definitiva.”
+“O modelo apresenta capacidade moderada de aproximar o label fraco no teste temporal. Como o rótulo deriva das próprias regras e há sobreposição de entidades entre meses, não apresento as métricas como prova independente de detecção nem como validação produtiva.”
 
 ## 6. Como interpretar o threshold?
 
-O threshold de 0,9 apresentou a maior MCC na própria validação.
+O threshold 0,3 apresentou o maior MCC na grade de 0,1 a 0,9 avaliada exclusivamente na calibragem de agosto/2025.
+
+A regra registrada é:
+
+`max_mcc_statistical_baseline`
 
 Ele não é um corte operacional definitivo.
 
 A escolha real deveria considerar:
 
-- capacidade de investigação;
-- severidade;
-- apetite de risco;
+- volume de alertas;
+- capacidade da fila;
 - SLA;
 - custo de falso positivo;
 - custo de falso negativo;
 - cobertura por tipologia;
-- calibragem independente.
+- apetite a risco;
+- calibragem e feedback operacional.
+
+No teste temporal, esse baseline gera 816 alertas em 2.498 registros, aproximadamente 32,67% da população. Esse volume reforça por que a escolha estatística não deve ser confundida com homologação operacional.
 
 Formulação:
 
-“O threshold é uma decisão estatística e operacional. Um corte só pode ser adotado depois de avaliar volume, risco e capacidade do time.”
+“O threshold 0,3 é somente o baseline estatístico de maior MCC na calibragem. Um corte operacional precisaria equilibrar risco, volume, custo dos erros e capacidade real de investigação.”
 
 ## 7. Por que o SAR não afirma crime?
 
@@ -184,10 +206,11 @@ Formulação:
 - Ausência de label investigativo final.
 - Ausência de campo explícito de espécie.
 - Device e IP com baixa reutilização para análise de rings.
-- R17 ainda separada do motor principal.
-- Notebooks sem execução versionada.
-- Outputs de ML ainda não totalmente regeneráveis.
-- SHAP ainda sem geração pública completa.
+- R17 ainda separada do motor principal e fora do label canônico.
+- O split canônico é temporal, mas não independente por entidade.
+- O label fraco mantém circularidade conceitual com parte das features.
+- O threshold estatístico ainda não possui homologação operacional.
+- Os outputs canônicos de ML, SHAP e gráficos são regeneráveis por código; isso não equivale a validação produtiva.
 - T4 sem integração ativa com LLM.
 - Ausência de backtesting com decisões investigativas reais.
 

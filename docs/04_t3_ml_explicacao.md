@@ -12,7 +12,7 @@ A base não possui um rótulo final de investigação ou lavagem confirmada.
 
 Por isso, foi adotado um label fraco:
 
-`suspicious_label = 1` quando `rule_count >= 3`.
+`weak_label = 1` quando pelo menos três regras determinísticas entre M01–M12 são disparadas no cliente-mês. A R17 permanece fora do label canônico.
 
 Esse rótulo representa uma aproximação operacional baseada no motor de regras. Ele não equivale a:
 
@@ -69,76 +69,146 @@ Essa comparação é adequada para uma análise mensal em lote, mas exigiria des
 
 ## Modelo
 
-Foi estruturado um pipeline XGBoost para PF com:
+O experimento canônico utiliza XGBoost na unidade cliente-mês com `random_state=42`.
 
-- `random_state=42`;
-- tratamento de variáveis categóricas;
-- ponderação de classe;
-- exclusão das colunas de regras e de `rule_count`;
-- ausência de normalização, compatível com boosting;
-- preservação de outliers e valores ausentes informativos.
+O contrato versionado contém 21 features primárias:
 
-A base disponível não sustenta um modelo PJ separado com a mesma qualidade cadastral. Seriam necessários campos mais robustos de CNPJ, CNAE, setor, porte, faturamento e beneficiário final.
+- 5 categóricas;
+- 16 numéricas.
 
-## Split temporal
+O pipeline preserva princípios importantes para este tipo de problema:
 
-O split registrado foi:
+- boosting sem normalização desnecessária;
+- ausência de imputação cega;
+- preservação de missing quando informativo;
+- ausência de remoção automática de outliers;
+- ponderação do desbalanceamento no treino.
 
-- treino: julho e agosto de 2025;
-- validação: setembro e outubro de 2025.
+A base disponível não sustenta, neste experimento canônico, uma alegação de modelos PF e PJ independentes com qualidade equivalente. Uma separação posterior deve depender da qualidade e cobertura cadastral disponível.
 
-O uso de meses posteriores na validação é mais adequado que um split aleatório, mas não garante ausência completa de leakage.
+## Split temporal canônico
 
-Pontos de atenção:
+O experimento separa explicitamente treino, calibragem e teste:
 
-- os mesmos clientes podem aparecer nos dois períodos;
-- a tabela `GeoBehavior` pode agregar informações do período completo;
-- outubro contém dados somente até o dia 4;
-- features de comparação utilizam o grupo do próprio mês.
+- treino: julho/2025;
+- calibragem: agosto/2025;
+- teste temporal: setembro/2025;
+- outubro/2025: excluído por mês incompleto.
 
-## Métricas registradas
+Distribuição:
 
-Os artefatos versionados registram:
+- treino: 2.499 registros, 236 positivos, prevalência 0,0944;
+- calibragem: 2.499 registros, 254 positivos, prevalência 0,1016;
+- teste: 2.498 registros, 220 positivos, prevalência 0,0881.
 
-- treino: 4.998 linhas e 422 positivos;
-- validação: 4.109 linhas e 189 positivos;
-- AUC-PR: 0,9416;
-- AUC-ROC: 0,9970;
-- threshold com maior MCC na validação: 0,9;
-- precision: 0,9241;
-- recall: 0,7725;
-- FPR: 0,0031;
-- MCC: 0,8382.
+Esse desenho é superior ao split aleatório para o objetivo do case, mas não é `entity-independent`. Há forte sobreposição das mesmas entidades entre meses sucessivos.
 
-## Interpretação
+## Métricas canônicas
 
-O desempenho elevado é esperado porque o label fraco deriva de regras construídas sobre variáveis próximas às features do modelo.
+### Calibragem — agosto/2025
 
-As colunas das regras e `rule_count` foram excluídas, evitando vazamento direto do rótulo. Ainda permanece circularidade conceitual entre os critérios das regras, as features e o label fraco.
+- AUC-PR: 0,3396;
+- AUC-ROC: 0,8150;
+- precision no threshold selecionado: 0,2220;
+- recall: 0,8031;
+- FPR: 0,3185;
+- MCC: 0,3037;
+- alertas: 919 de 2.499;
+- alert rate: aproximadamente 36,77%.
 
-O threshold de 0,9 foi selecionado pela maior MCC na própria validação. Ele deve ser tratado como referência estatística do experimento, não como threshold operacional calibrado.
+### Teste temporal — setembro/2025
+
+- AUC-PR: 0,3167;
+- AUC-ROC: 0,8269;
+- precision: 0,2096;
+- recall: 0,7773;
+- FPR: 0,2831;
+- MCC: 0,2986;
+- alertas: 816 de 2.498;
+- alert rate: aproximadamente 32,67%.
+
+As métricas avaliam a capacidade de aproximar o `weak_label`. Elas não medem diretamente ocorrência de ilícito, SAR aceito ou decisão investigativa confirmada.
+
+## Threshold
+
+Os thresholds de 0,1 a 0,9 são avaliados exclusivamente na calibragem de agosto/2025.
+
+O threshold 0,3 apresentou o maior MCC nessa grade e foi marcado como:
+
+`max_mcc_statistical_baseline`
+
+Esse corte é uma referência estatística experimental.
+
+Ele não foi homologado operacionalmente e não incorpora restrições de:
+
+- capacidade diária da fila;
+- SLA;
+- custo de falso positivo;
+- custo de falso negativo;
+- apetite a risco;
+- cobertura mínima por tipologia.
+
+Portanto, não deve ser apresentado como threshold de produção.
+
+## Leakage e circularidade
+
+As colunas das regras e a contagem agregada de regras não são utilizadas diretamente como preditores do label.
+
+Isso reduz leakage direto, mas não elimina circularidade conceitual.
+
+O `weak_label` deriva das regras M01–M12, enquanto várias features representam conceitos comportamentais correlatos aos mesmos sinais. Assim, o modelo aprende uma aproximação do mecanismo de rotulagem e não uma verdade independente sobre atividade ilícita.
+
+Também permanece a limitação de sobreposição das mesmas entidades entre os meses do split.
 
 ## Explicabilidade
 
-Existem outputs versionados de:
+A explicabilidade canônica é reproduzível por código.
 
-- importância nativa do XGBoost;
-- valores SHAP médios absolutos;
-- ranking de casos da validação.
+São gerados:
 
-O código público atual ainda não contém a geração completa desses artefatos. Portanto, não é correto afirmar que o pipeline público reproduz hoje toda a etapa de SHAP.
+- feature importance nativa do XGBoost por `gain`;
+- resumo SHAP sobre as 2.498 linhas do teste temporal;
+- ranking dos 30 maiores scores do teste;
+- cinco gráficos canônicos em português;
+- manifests com hashes dos artefatos.
+
+SHAP e feature importance são análises pós-hoc.
+
+Eles:
+
+- não participam do treino;
+- não participam da seleção do threshold;
+- não demonstram causalidade;
+- devem ser interpretados em conjunto com o desenho do label e as limitações do experimento.
+
+## Artefatos canônicos
+
+A fonte pública atual da T3 é:
+
+- `outputs/t3_ml_canonical/00_ml_canonical_summary.md`
+- `outputs/t3_ml_canonical/01_canonical_model_dataset.csv`
+- `outputs/t3_ml_canonical/02_split_distribution.csv`
+- `outputs/t3_ml_canonical/03_metrics_summary.csv`
+- `outputs/t3_ml_canonical/04_threshold_metrics_calibration.csv`
+- `outputs/t3_ml_canonical/05_feature_importance_gain.csv`
+- `outputs/t3_ml_canonical/06_shap_summary_test.csv`
+- `outputs/t3_ml_canonical/07_test_scored_top30.csv`
+- `outputs/t3_ml_canonical/08_run_manifest.json`
+- gráficos `09` a `13`;
+- `outputs/t3_ml_canonical/14_charts_manifest.json`.
 
 ## Como apresentar
 
-“Na T3, usei as regras para criar um label fraco e estruturei um baseline XGBoost na unidade cliente-mês. Removi as colunas de regras do treino para evitar vazamento direto, mas reconheço que ainda existe circularidade conceitual. As métricas são fortes, porém devem ser lidas como resultado experimental de priorização, não como validação de um modelo pronto para produção.”
+“Na T3, usei as regras M01–M12 para criar um label fraco e estruturei um baseline XGBoost na unidade cliente-mês. Separei julho para treino, agosto para calibragem e setembro para teste temporal, excluindo outubro por estar incompleto. O threshold 0,3 é somente o baseline estatístico de maior MCC na calibragem e não foi homologado operacionalmente. No teste, obtive AUC-PR de 0,3167 e AUC-ROC de 0,8269. Como o label deriva das regras e há sobreposição de entidades entre meses, interpreto as métricas como capacidade de aproximar esse label fraco, não como validação produtiva ou prova independente de atividade ilícita.”
 
 ## Próximos passos
 
-- reconstruir todos os outputs por código versionado;
-- incorporar a geração de SHAP;
-- separar treino, calibragem e teste;
-- avaliar sobreposição de clientes;
-- reconstruir features geográficas por janela temporal;
-- calibrar thresholds com capacidade operacional;
+- calibrar thresholds com capacidade operacional e custos de erro;
+- avaliar splits adicionais com independência por entidade;
 - validar com feedback investigativo real;
-- monitorar drift e falsos positivos.
+- reduzir circularidade do label quando houver rótulos mais independentes;
+- avaliar calibragem probabilística;
+- testar estabilidade temporal e generalização;
+- monitorar drift e falsos positivos/negativos;
+- separar PF e PJ somente quando os dados sustentarem;
+- manter revisão humana obrigatória.
