@@ -1338,6 +1338,381 @@ def fit_canonical_xgboost(
     )
 
 
+def get_transformed_feature_names(
+    model_fit: CanonicalModelFit,
+) -> tuple[str, ...]:
+    """Return fitted feature names in the exact model matrix order."""
+
+    pipeline = model_fit.pipeline
+
+    if not hasattr(
+        pipeline,
+        "named_steps",
+    ):
+        raise ValueError(
+            "pipeline canônico não possui named_steps"
+        )
+
+    preprocessor = pipeline.named_steps.get(
+        "preprocess"
+    )
+
+    if (
+        preprocessor is None
+        or not hasattr(
+            preprocessor,
+            "get_feature_names_out",
+        )
+    ):
+        raise ValueError(
+            "preprocessador canônico incompatível"
+        )
+
+    names = tuple(
+        str(name)
+        for name in (
+            preprocessor
+            .get_feature_names_out()
+        )
+    )
+
+    if not names:
+        raise ValueError(
+            "nenhuma feature transformada encontrada"
+        )
+
+    if len(set(names)) != len(names):
+        raise ValueError(
+            "features transformadas contêm duplicidades"
+        )
+
+    return names
+
+
+def canonical_xgboost_feature_importance(
+    model_fit: CanonicalModelFit,
+    *,
+    importance_type: str = "gain",
+) -> pd.DataFrame:
+    """Return native XGBoost importance mapped to fitted feature names."""
+
+    allowed_types = {
+        "weight",
+        "gain",
+        "cover",
+        "total_gain",
+        "total_cover",
+    }
+
+    if importance_type not in allowed_types:
+        raise ValueError(
+            "importance_type inválido: "
+            + str(
+                importance_type
+            )
+        )
+
+    names = get_transformed_feature_names(
+        model_fit
+    )
+
+    pipeline = model_fit.pipeline
+
+    model = pipeline.named_steps.get(
+        "model"
+    )
+
+    if (
+        model is None
+        or not hasattr(
+            model,
+            "get_booster",
+        )
+    ):
+        raise ValueError(
+            "modelo canônico não expõe booster XGBoost"
+        )
+
+    raw_importance = (
+        model
+        .get_booster()
+        .get_score(
+            importance_type=importance_type
+        )
+    )
+
+    values = [
+        0.0
+        for _ in names
+    ]
+
+    for raw_name, raw_value in (
+        raw_importance.items()
+    ):
+        if (
+            not raw_name.startswith("f")
+            or not raw_name[1:].isdigit()
+        ):
+            raise ValueError(
+                "nome interno de feature XGBoost "
+                f"inesperado: {raw_name}"
+            )
+
+        index = int(
+            raw_name[1:]
+        )
+
+        if (
+            index < 0
+            or index >= len(names)
+        ):
+            raise ValueError(
+                "índice interno de feature XGBoost "
+                f"fora do intervalo: {raw_name}"
+            )
+
+        value = float(
+            raw_value
+        )
+
+        if not np.isfinite(
+            value
+        ):
+            raise ValueError(
+                "importância XGBoost não finita"
+            )
+
+        values[index] = value
+
+    result = pd.DataFrame(
+        {
+            "feature": names,
+            "importance_type":
+                importance_type,
+            "importance": values,
+        }
+    )
+
+    return (
+        result
+        .sort_values(
+            [
+                "importance",
+                "feature",
+            ],
+            ascending=[
+                False,
+                True,
+            ],
+            kind="mergesort",
+        )
+        .reset_index(
+            drop=True
+        )
+    )
+
+
+def canonical_shap_summary(
+    model_fit: CanonicalModelFit,
+    dataset: pd.DataFrame,
+    *,
+    split: str = "test",
+    max_rows: int | None = None,
+) -> pd.DataFrame:
+    """Summarize SHAP values on one explicit canonical partition.
+
+    SHAP is post-hoc explainability only. The function does not alter
+    training, calibration, threshold selection or the untouched test label.
+    Rows are selected deterministically in their existing partition order.
+    """
+
+    if split not in CANONICAL_SPLITS:
+        raise ValueError(
+            "split inválido para SHAP: "
+            + str(
+                split
+            )
+        )
+
+    if max_rows is not None:
+        if (
+            isinstance(
+                max_rows,
+                bool,
+            )
+            or int(
+                max_rows
+            ) != max_rows
+            or max_rows <= 0
+        ):
+            raise ValueError(
+                "max_rows deve ser inteiro positivo"
+            )
+
+    partitions = split_canonical_dataset(
+        dataset
+    )
+
+    partition = getattr(
+        partitions,
+        split,
+    )
+
+    if max_rows is not None:
+        partition = partition.iloc[
+            :int(
+                max_rows
+            )
+        ]
+
+    if partition.empty:
+        raise ValueError(
+            "partição SHAP não pode ser vazia"
+        )
+
+    feature_columns = list(
+        model_fit.categorical_features
+        + model_fit.numeric_features
+    )
+
+    missing = sorted(
+        set(
+            feature_columns
+        )
+        - set(
+            partition.columns
+        )
+    )
+
+    if missing:
+        raise ValueError(
+            "features ausentes na partição SHAP: "
+            + ", ".join(
+                missing
+            )
+        )
+
+    names = get_transformed_feature_names(
+        model_fit
+    )
+
+    pipeline = model_fit.pipeline
+
+    preprocessor = pipeline.named_steps.get(
+        "preprocess"
+    )
+
+    model = pipeline.named_steps.get(
+        "model"
+    )
+
+    if (
+        preprocessor is None
+        or not hasattr(
+            preprocessor,
+            "transform",
+        )
+    ):
+        raise ValueError(
+            "preprocessador canônico incompatível"
+        )
+
+    if (
+        model is None
+        or not hasattr(
+            model,
+            "get_booster",
+        )
+    ):
+        raise ValueError(
+            "modelo canônico incompatível com SHAP"
+        )
+
+    transformed = preprocessor.transform(
+        partition[
+            feature_columns
+        ]
+    )
+
+    try:
+        import shap
+    except ImportError as error:
+        raise ImportError(
+            "Dependência SHAP ausente. "
+            "Instale a versão fixada em requirements.txt."
+        ) from error
+
+    explainer = shap.TreeExplainer(
+        model
+    )
+
+    shap_values = np.asarray(
+        explainer.shap_values(
+            transformed
+        )
+    )
+
+    expected_shape = (
+        len(partition),
+        len(names),
+    )
+
+    if shap_values.shape != expected_shape:
+        raise ValueError(
+            "shape SHAP divergente; esperado="
+            f"{expected_shape}, recebido="
+            f"{shap_values.shape}"
+        )
+
+    if not np.isfinite(
+        shap_values
+    ).all():
+        raise ValueError(
+            "SHAP contém valores não finitos"
+        )
+
+    result = pd.DataFrame(
+        {
+            "feature": names,
+            "mean_abs_shap":
+                np.mean(
+                    np.abs(
+                        shap_values
+                    ),
+                    axis=0,
+                ),
+            "mean_shap":
+                np.mean(
+                    shap_values,
+                    axis=0,
+                ),
+            "split": split,
+            "rows_explained":
+                len(
+                    partition
+                ),
+        }
+    )
+
+    return (
+        result
+        .sort_values(
+            [
+                "mean_abs_shap",
+                "feature",
+            ],
+            ascending=[
+                False,
+                True,
+            ],
+            kind="mergesort",
+        )
+        .reset_index(
+            drop=True
+        )
+    )
+
+
 def temporal_split(
     df: pd.DataFrame,
     validation_start_month: str = "2025-09",
