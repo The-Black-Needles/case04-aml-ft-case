@@ -75,6 +75,41 @@ MONTH_RAIL_PRESENCE_COLUMNS = (
     "rail_presence_non_exclusive",
 )
 
+PRINCIPAL_TRANSACTION_STATUSES = (
+    "Confirmed",
+    "Pending",
+    "Failed",
+    "Chargeback",
+)
+
+ALERT_LOAD_COLUMNS = (
+    "level",
+    "observations",
+    "alerted_observations",
+    "alert_rate",
+    "total_rule_hits",
+    "mean_rule_hits_per_observation",
+    "max_rule_hits_per_observation",
+)
+
+RULE_COUNT_DISTRIBUTION_COLUMNS = (
+    "level",
+    "rule_count",
+    "observations",
+    "observation_share",
+)
+
+TRANSACTION_SEGMENT_LOAD_COLUMNS = (
+    "segment",
+    "segment_value",
+    "observations",
+    "alerted_observations",
+    "alert_rate",
+    "total_rule_hits",
+    "mean_rule_hits_per_observation",
+    "max_rule_hits_per_observation",
+)
+
 
 def _rule_id(
     rule_name: str,
@@ -622,4 +657,300 @@ def customer_month_rule_rail_presence_summary(
     return pd.DataFrame(
         rows,
         columns=MONTH_RAIL_PRESENCE_COLUMNS,
+    )
+
+def _rule_counts(
+    frame: pd.DataFrame,
+    rule_columns: Sequence[str],
+    *,
+    level: str,
+) -> pd.Series:
+    _validate_rule_frame(
+        frame,
+        rule_columns,
+        level,
+    )
+
+    return frame.loc[
+        :,
+        list(rule_columns),
+    ].sum(
+        axis=1
+    ).astype(
+        "int64"
+    )
+
+
+def alert_load_summary(
+    frame: pd.DataFrame,
+    rule_columns: Sequence[str],
+    *,
+    level: str,
+) -> pd.DataFrame:
+    """Resume carga operacional sem interpretar mérito do alerta."""
+
+    counts = _rule_counts(
+        frame,
+        rule_columns,
+        level=level,
+    )
+
+    observations = len(
+        counts
+    )
+
+    alerted = int(
+        counts.gt(0).sum()
+    )
+
+    total_hits = int(
+        counts.sum()
+    )
+
+    return pd.DataFrame(
+        [
+            {
+                "level": level,
+                "observations": observations,
+                "alerted_observations": alerted,
+                "alert_rate": (
+                    alerted / observations
+                    if observations
+                    else 0.0
+                ),
+                "total_rule_hits": total_hits,
+                "mean_rule_hits_per_observation": (
+                    total_hits / observations
+                    if observations
+                    else 0.0
+                ),
+                "max_rule_hits_per_observation": (
+                    int(counts.max())
+                    if observations
+                    else 0
+                ),
+            }
+        ],
+        columns=ALERT_LOAD_COLUMNS,
+    )
+
+
+def rule_count_distribution(
+    frame: pd.DataFrame,
+    rule_columns: Sequence[str],
+    *,
+    level: str,
+) -> pd.DataFrame:
+    """Distribui observações pelo número de regras acionadas."""
+
+    counts = _rule_counts(
+        frame,
+        rule_columns,
+        level=level,
+    )
+
+    observations = len(
+        counts
+    )
+
+    frequencies = (
+        counts
+        .value_counts()
+        .sort_index()
+    )
+
+    rows = [
+        {
+            "level": level,
+            "rule_count": int(rule_count),
+            "observations": int(frequency),
+            "observation_share": (
+                int(frequency) / observations
+                if observations
+                else 0.0
+            ),
+        }
+        for (
+            rule_count,
+            frequency,
+        ) in frequencies.items()
+    ]
+
+    return pd.DataFrame(
+        rows,
+        columns=RULE_COUNT_DISTRIBUTION_COLUMNS,
+    )
+
+
+def _segment_load_row(
+    counts: pd.Series,
+    mask: pd.Series,
+    *,
+    segment: str,
+    segment_value: str,
+) -> dict[str, object]:
+    selected = counts.loc[
+        mask
+    ]
+
+    observations = len(
+        selected
+    )
+
+    alerted = int(
+        selected.gt(0).sum()
+    )
+
+    total_hits = int(
+        selected.sum()
+    )
+
+    return {
+        "segment": segment,
+        "segment_value": segment_value,
+        "observations": observations,
+        "alerted_observations": alerted,
+        "alert_rate": (
+            alerted / observations
+            if observations
+            else 0.0
+        ),
+        "total_rule_hits": total_hits,
+        "mean_rule_hits_per_observation": (
+            total_hits / observations
+            if observations
+            else 0.0
+        ),
+        "max_rule_hits_per_observation": (
+            int(selected.max())
+            if observations
+            else 0
+        ),
+    }
+
+
+def transaction_alert_load_by_rail(
+    frame: pd.DataFrame,
+    rule_columns: Sequence[str],
+    *,
+    rail_column: str = "transaction_type",
+) -> pd.DataFrame:
+    """Mede carga agregada por rail sem alterar o motor."""
+
+    counts = _rule_counts(
+        frame,
+        rule_columns,
+        level="transaction",
+    )
+
+    _validate_transaction_rails(
+        frame,
+        rail_column,
+    )
+
+    rows = [
+        _segment_load_row(
+            counts,
+            frame[
+                rail_column
+            ].eq(
+                rail
+            ),
+            segment="rail",
+            segment_value=rail,
+        )
+        for rail in PRINCIPAL_RAILS
+    ]
+
+    return pd.DataFrame(
+        rows,
+        columns=TRANSACTION_SEGMENT_LOAD_COLUMNS,
+    )
+
+
+def _validate_transaction_statuses(
+    frame: pd.DataFrame,
+    status_column: str,
+) -> None:
+    if status_column not in frame.columns:
+        raise ValueError(
+            f"Coluna de status ausente: {status_column}"
+        )
+
+    values = frame[
+        status_column
+    ]
+
+    if values.isna().any():
+        raise ValueError(
+            f"Coluna {status_column} contém status ausentes."
+        )
+
+    invalid_type = ~values.map(
+        lambda value: isinstance(
+            value,
+            str,
+        )
+    )
+
+    if invalid_type.any():
+        raise TypeError(
+            f"Coluna {status_column} deve conter strings."
+        )
+
+    invalid = sorted(
+        set(
+            values.astype(str)
+        )
+        - set(
+            PRINCIPAL_TRANSACTION_STATUSES
+        )
+    )
+
+    if invalid:
+        raise ValueError(
+            "Status transacional não suportado: "
+            + ", ".join(
+                invalid
+            )
+        )
+
+
+def transaction_alert_load_by_status(
+    frame: pd.DataFrame,
+    rule_columns: Sequence[str],
+    *,
+    status_column: str = "status",
+) -> pd.DataFrame:
+    """Segmenta carga por status; status não é ground truth."""
+
+    counts = _rule_counts(
+        frame,
+        rule_columns,
+        level="transaction",
+    )
+
+    _validate_transaction_statuses(
+        frame,
+        status_column,
+    )
+
+    rows = [
+        _segment_load_row(
+            counts,
+            frame[
+                status_column
+            ].eq(
+                status_value
+            ),
+            segment="status",
+            segment_value=status_value,
+        )
+        for status_value
+        in PRINCIPAL_TRANSACTION_STATUSES
+    ]
+
+    return pd.DataFrame(
+        rows,
+        columns=TRANSACTION_SEGMENT_LOAD_COLUMNS,
     )

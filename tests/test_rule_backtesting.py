@@ -722,5 +722,317 @@ class RuleBacktestingTests(
             )
 
 
+
+    def test_alert_load_summary_is_exact(
+        self,
+    ) -> None:
+        result = BACKTESTING.alert_load_summary(
+            transaction_fixture(),
+            (
+                "R01_alpha",
+                "R02_beta",
+                "R03_zero",
+            ),
+            level="transaction",
+        )
+
+        row = result.iloc[0]
+
+        self.assertEqual(
+            tuple(result.columns),
+            BACKTESTING.ALERT_LOAD_COLUMNS,
+        )
+        self.assertEqual(
+            int(row["observations"]),
+            4,
+        )
+        self.assertEqual(
+            int(row["alerted_observations"]),
+            3,
+        )
+        self.assertEqual(
+            float(row["alert_rate"]),
+            0.75,
+        )
+        self.assertEqual(
+            int(row["total_rule_hits"]),
+            4,
+        )
+        self.assertEqual(
+            float(
+                row[
+                    "mean_rule_hits_per_observation"
+                ]
+            ),
+            1.0,
+        )
+        self.assertEqual(
+            int(
+                row[
+                    "max_rule_hits_per_observation"
+                ]
+            ),
+            2,
+        )
+
+    def test_empty_alert_load_is_zero(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "R01_alpha": pd.Series(
+                    [],
+                    dtype=bool,
+                ),
+            }
+        )
+
+        result = BACKTESTING.alert_load_summary(
+            frame,
+            (
+                "R01_alpha",
+            ),
+            level="transaction",
+        )
+
+        row = result.iloc[0]
+
+        self.assertEqual(
+            int(row["observations"]),
+            0,
+        )
+        self.assertEqual(
+            int(row["alerted_observations"]),
+            0,
+        )
+        self.assertEqual(
+            float(row["alert_rate"]),
+            0.0,
+        )
+        self.assertEqual(
+            int(row["total_rule_hits"]),
+            0,
+        )
+        self.assertEqual(
+            int(
+                row[
+                    "max_rule_hits_per_observation"
+                ]
+            ),
+            0,
+        )
+
+    def test_rule_count_distribution_is_exact(
+        self,
+    ) -> None:
+        result = BACKTESTING.rule_count_distribution(
+            transaction_fixture(),
+            (
+                "R01_alpha",
+                "R02_beta",
+                "R03_zero",
+            ),
+            level="transaction",
+        )
+
+        self.assertEqual(
+            tuple(result.columns),
+            BACKTESTING.RULE_COUNT_DISTRIBUTION_COLUMNS,
+        )
+
+        self.assertEqual(
+            result[
+                "rule_count"
+            ].tolist(),
+            [
+                0,
+                1,
+                2,
+            ],
+        )
+
+        self.assertEqual(
+            result[
+                "observations"
+            ].tolist(),
+            [
+                1,
+                2,
+                1,
+            ],
+        )
+
+        self.assertEqual(
+            result[
+                "observation_share"
+            ].tolist(),
+            [
+                0.25,
+                0.5,
+                0.25,
+            ],
+        )
+
+    def test_transaction_alert_load_by_rail_is_exact(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "transaction_type": [
+                    "PIX",
+                    "PIX",
+                    "Card",
+                    "Wire",
+                ],
+                "R01_alpha": [
+                    True,
+                    False,
+                    True,
+                    False,
+                ],
+                "R02_beta": [
+                    True,
+                    False,
+                    False,
+                    True,
+                ],
+            }
+        )
+
+        result = (
+            BACKTESTING
+            .transaction_alert_load_by_rail(
+                frame,
+                (
+                    "R01_alpha",
+                    "R02_beta",
+                ),
+            )
+        )
+
+        pix = result[
+            result[
+                "segment_value"
+            ].eq(
+                "PIX"
+            )
+        ].iloc[0]
+
+        self.assertEqual(
+            int(pix["observations"]),
+            2,
+        )
+        self.assertEqual(
+            int(
+                pix[
+                    "alerted_observations"
+                ]
+            ),
+            1,
+        )
+        self.assertEqual(
+            int(pix["total_rule_hits"]),
+            2,
+        )
+        self.assertEqual(
+            int(
+                pix[
+                    "max_rule_hits_per_observation"
+                ]
+            ),
+            2,
+        )
+
+    def test_transaction_alert_load_by_status_is_exact(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "status": [
+                    "Confirmed",
+                    "Pending",
+                    "Failed",
+                    "Chargeback",
+                ],
+                "R01_alpha": [
+                    True,
+                    False,
+                    True,
+                    True,
+                ],
+            }
+        )
+
+        result = (
+            BACKTESTING
+            .transaction_alert_load_by_status(
+                frame,
+                (
+                    "R01_alpha",
+                ),
+            )
+        )
+
+        confirmed = result[
+            result[
+                "segment_value"
+            ].eq(
+                "Confirmed"
+            )
+        ].iloc[0]
+
+        pending = result[
+            result[
+                "segment_value"
+            ].eq(
+                "Pending"
+            )
+        ].iloc[0]
+
+        self.assertEqual(
+            int(
+                confirmed[
+                    "alerted_observations"
+                ]
+            ),
+            1,
+        )
+        self.assertEqual(
+            int(
+                pending[
+                    "alerted_observations"
+                ]
+            ),
+            0,
+        )
+
+    def test_transaction_status_rejects_unknown_value(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "status": [
+                    "Confirmed",
+                    "Unknown",
+                ],
+                "R01_alpha": [
+                    True,
+                    False,
+                ],
+            }
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "Status transacional não suportado",
+        ):
+            BACKTESTING.transaction_alert_load_by_status(
+                frame,
+                (
+                    "R01_alpha",
+                ),
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
