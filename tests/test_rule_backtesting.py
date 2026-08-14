@@ -399,5 +399,328 @@ class RuleBacktestingTests(
             )
 
 
+    def test_transaction_rule_rail_summary_is_exact(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "transaction_type": [
+                    "PIX",
+                    "PIX",
+                    "Card",
+                    "Wire",
+                ],
+                "R01_alpha": [
+                    True,
+                    False,
+                    True,
+                    False,
+                ],
+                "R02_beta": [
+                    False,
+                    True,
+                    False,
+                    False,
+                ],
+            }
+        )
+
+        result = (
+            BACKTESTING
+            .transaction_rule_rail_summary(
+                frame,
+                (
+                    "R01_alpha",
+                    "R02_beta",
+                ),
+            )
+        )
+
+        self.assertEqual(
+            tuple(result.columns),
+            BACKTESTING.TRANSACTION_RAIL_COLUMNS,
+        )
+
+        self.assertEqual(
+            len(result),
+            6,
+        )
+
+        r01_pix = result[
+            result["rule_id"].eq("R01")
+            & result["rail"].eq("PIX")
+        ].iloc[0]
+
+        self.assertEqual(
+            int(r01_pix["observations"]),
+            2,
+        )
+        self.assertEqual(
+            int(r01_pix["hits"]),
+            1,
+        )
+        self.assertEqual(
+            float(r01_pix["hit_rate"]),
+            0.5,
+        )
+
+        r01_wire = result[
+            result["rule_id"].eq("R01")
+            & result["rail"].eq("Wire")
+        ].iloc[0]
+
+        self.assertEqual(
+            int(r01_wire["observations"]),
+            1,
+        )
+        self.assertEqual(
+            int(r01_wire["hits"]),
+            0,
+        )
+
+    def test_transaction_rail_rejects_unknown_rail(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "transaction_type": [
+                    "PIX",
+                    "Cash",
+                ],
+                "R01_alpha": [
+                    True,
+                    False,
+                ],
+            }
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "Rail não suportado",
+        ):
+            BACKTESTING.transaction_rule_rail_summary(
+                frame,
+                (
+                    "R01_alpha",
+                ),
+            )
+
+    def test_transaction_rail_rejects_missing_rail(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "transaction_type": [
+                    "PIX",
+                    None,
+                ],
+                "R01_alpha": [
+                    True,
+                    False,
+                ],
+            }
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "rails ausentes",
+        ):
+            BACKTESTING.transaction_rule_rail_summary(
+                frame,
+                (
+                    "R01_alpha",
+                ),
+            )
+
+    def test_month_rail_presence_is_non_exclusive(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "pix_count": [
+                    1,
+                    0,
+                    1,
+                ],
+                "card_count": [
+                    1,
+                    1,
+                    0,
+                ],
+                "wire_count": [
+                    0,
+                    0,
+                    1,
+                ],
+                "M01_alpha": [
+                    True,
+                    True,
+                    False,
+                ],
+                "M02_beta": [
+                    False,
+                    True,
+                    True,
+                ],
+            }
+        )
+
+        result = (
+            BACKTESTING
+            .customer_month_rule_rail_presence_summary(
+                frame,
+                (
+                    "M01_alpha",
+                    "M02_beta",
+                ),
+            )
+        )
+
+        self.assertEqual(
+            tuple(result.columns),
+            BACKTESTING.MONTH_RAIL_PRESENCE_COLUMNS,
+        )
+
+        self.assertEqual(
+            len(result),
+            6,
+        )
+
+        self.assertTrue(
+            result[
+                "rail_presence_non_exclusive"
+            ].all()
+        )
+
+        m01_pix = result[
+            result["rule_id"].eq("M01")
+            & result["rail"].eq("PIX")
+        ].iloc[0]
+
+        self.assertEqual(
+            int(m01_pix["customer_months"]),
+            2,
+        )
+        self.assertEqual(
+            int(m01_pix["hits"]),
+            1,
+        )
+        self.assertEqual(
+            float(m01_pix["hit_rate"]),
+            0.5,
+        )
+
+        m01_card = result[
+            result["rule_id"].eq("M01")
+            & result["rail"].eq("Card")
+        ].iloc[0]
+
+        self.assertEqual(
+            int(m01_card["customer_months"]),
+            2,
+        )
+        self.assertEqual(
+            int(m01_card["hits"]),
+            2,
+        )
+        self.assertEqual(
+            float(m01_card["hit_rate"]),
+            1.0,
+        )
+
+    def test_month_rail_rejects_fractional_counts(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "pix_count": [
+                    1.5,
+                ],
+                "card_count": [
+                    0,
+                ],
+                "wire_count": [
+                    0,
+                ],
+                "M01_alpha": [
+                    True,
+                ],
+            }
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "contagens fracionárias",
+        ):
+            BACKTESTING.customer_month_rule_rail_presence_summary(
+                frame,
+                (
+                    "M01_alpha",
+                ),
+            )
+
+    def test_month_rail_rejects_negative_counts(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "pix_count": [
+                    -1,
+                ],
+                "card_count": [
+                    0,
+                ],
+                "wire_count": [
+                    0,
+                ],
+                "M01_alpha": [
+                    True,
+                ],
+            }
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "valores negativos",
+        ):
+            BACKTESTING.customer_month_rule_rail_presence_summary(
+                frame,
+                (
+                    "M01_alpha",
+                ),
+            )
+
+    def test_month_rail_rejects_non_numeric_counts(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "pix_count": [
+                    "invalid",
+                ],
+                "card_count": [
+                    0,
+                ],
+                "wire_count": [
+                    0,
+                ],
+                "M01_alpha": [
+                    True,
+                ],
+            }
+        )
+
+        with self.assertRaisesRegex(
+            TypeError,
+            "deve ser numérica",
+        ):
+            BACKTESTING.customer_month_rule_rail_presence_summary(
+                frame,
+                (
+                    "M01_alpha",
+                ),
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

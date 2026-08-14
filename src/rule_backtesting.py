@@ -48,6 +48,33 @@ COOCCURRENCE_COLUMNS = (
     "p_b_given_a",
 )
 
+PRINCIPAL_RAILS = (
+    "PIX",
+    "Card",
+    "Wire",
+)
+
+TRANSACTION_RAIL_COLUMNS = (
+    "rule_id",
+    "rule_name",
+    "level",
+    "rail",
+    "observations",
+    "hits",
+    "hit_rate",
+)
+
+MONTH_RAIL_PRESENCE_COLUMNS = (
+    "rule_id",
+    "rule_name",
+    "level",
+    "rail",
+    "customer_months",
+    "hits",
+    "hit_rate",
+    "rail_presence_non_exclusive",
+)
+
 
 def _rule_id(
     rule_name: str,
@@ -336,4 +363,263 @@ def pairwise_rule_cooccurrence(
     return pd.DataFrame(
         rows,
         columns=COOCCURRENCE_COLUMNS,
+    )
+
+def _validate_transaction_rails(
+    frame: pd.DataFrame,
+    rail_column: str,
+) -> None:
+    if rail_column not in frame.columns:
+        raise ValueError(
+            f"Coluna de rail ausente: {rail_column}"
+        )
+
+    rails = frame[
+        rail_column
+    ]
+
+    if rails.isna().any():
+        raise ValueError(
+            f"Coluna {rail_column} contém rails ausentes."
+        )
+
+    invalid_type = ~rails.map(
+        lambda value: isinstance(
+            value,
+            str,
+        )
+    )
+
+    if invalid_type.any():
+        raise TypeError(
+            f"Coluna {rail_column} deve conter strings."
+        )
+
+    invalid = sorted(
+        set(
+            rails.astype(str)
+        )
+        - set(PRINCIPAL_RAILS)
+    )
+
+    if invalid:
+        raise ValueError(
+            "Rail não suportado no motor principal: "
+            + ", ".join(
+                invalid
+            )
+        )
+
+
+def transaction_rule_rail_summary(
+    frame: pd.DataFrame,
+    rule_columns: Sequence[str],
+    *,
+    rail_column: str = "transaction_type",
+) -> pd.DataFrame:
+    """Resume acionamentos por rail transacional principal."""
+
+    identifiers = _validate_rule_frame(
+        frame,
+        rule_columns,
+        "transaction",
+    )
+
+    _validate_transaction_rails(
+        frame,
+        rail_column,
+    )
+
+    rows: list[
+        dict[str, object]
+    ] = []
+
+    for (
+        identifier,
+        rule_name,
+    ) in zip(
+        identifiers,
+        rule_columns,
+        strict=True,
+    ):
+        for rail in PRINCIPAL_RAILS:
+            rail_mask = frame[
+                rail_column
+            ].eq(
+                rail
+            )
+
+            observations = int(
+                rail_mask.sum()
+            )
+
+            hits = int(
+                frame.loc[
+                    rail_mask,
+                    rule_name,
+                ].sum()
+            )
+
+            hit_rate = (
+                hits / observations
+                if observations
+                else 0.0
+            )
+
+            rows.append(
+                {
+                    "rule_id": identifier,
+                    "rule_name": rule_name,
+                    "level": "transaction",
+                    "rail": rail,
+                    "observations": observations,
+                    "hits": hits,
+                    "hit_rate": hit_rate,
+                }
+            )
+
+    return pd.DataFrame(
+        rows,
+        columns=TRANSACTION_RAIL_COLUMNS,
+    )
+
+
+def _validate_month_rail_counts(
+    frame: pd.DataFrame,
+    rail_count_columns: dict[str, str],
+) -> None:
+    if tuple(
+        rail_count_columns
+    ) != PRINCIPAL_RAILS:
+        raise ValueError(
+            "Contrato de rails mensal deve seguir "
+            "PIX, Card e Wire."
+        )
+
+    for (
+        rail,
+        column,
+    ) in rail_count_columns.items():
+        if column not in frame.columns:
+            raise ValueError(
+                f"Coluna de presença do rail {rail} "
+                f"ausente: {column}"
+            )
+
+        values = frame[
+            column
+        ]
+
+        if values.isna().any():
+            raise ValueError(
+                f"Coluna {column} contém valores ausentes."
+            )
+
+        numeric = pd.to_numeric(
+            values,
+            errors="coerce",
+        )
+
+        if numeric.isna().any():
+            raise TypeError(
+                f"Coluna {column} deve ser numérica."
+            )
+
+        if numeric.mod(1).ne(0).any():
+            raise ValueError(
+                f"Coluna {column} contém contagens fracionárias."
+            )
+
+        if numeric.lt(0).any():
+            raise ValueError(
+                f"Coluna {column} contém valores negativos."
+            )
+
+
+def customer_month_rule_rail_presence_summary(
+    frame: pd.DataFrame,
+    rule_columns: Sequence[str],
+    *,
+    rail_count_columns: dict[str, str] | None = None,
+) -> pd.DataFrame:
+    """Mede cobertura mensal por presença não exclusiva de rail."""
+
+    identifiers = _validate_rule_frame(
+        frame,
+        rule_columns,
+        "customer_month",
+    )
+
+    mapping = (
+        rail_count_columns
+        if rail_count_columns is not None
+        else {
+            "PIX": "pix_count",
+            "Card": "card_count",
+            "Wire": "wire_count",
+        }
+    )
+
+    _validate_month_rail_counts(
+        frame,
+        mapping,
+    )
+
+    rows: list[
+        dict[str, object]
+    ] = []
+
+    for (
+        identifier,
+        rule_name,
+    ) in zip(
+        identifiers,
+        rule_columns,
+        strict=True,
+    ):
+        for rail in PRINCIPAL_RAILS:
+            count_column = mapping[
+                rail
+            ]
+
+            present = pd.to_numeric(
+                frame[
+                    count_column
+                ],
+                errors="raise",
+            ).gt(0)
+
+            customer_months = int(
+                present.sum()
+            )
+
+            hits = int(
+                frame.loc[
+                    present,
+                    rule_name,
+                ].sum()
+            )
+
+            hit_rate = (
+                hits / customer_months
+                if customer_months
+                else 0.0
+            )
+
+            rows.append(
+                {
+                    "rule_id": identifier,
+                    "rule_name": rule_name,
+                    "level": "customer_month",
+                    "rail": rail,
+                    "customer_months": customer_months,
+                    "hits": hits,
+                    "hit_rate": hit_rate,
+                    "rail_presence_non_exclusive": True,
+                }
+            )
+
+    return pd.DataFrame(
+        rows,
+        columns=MONTH_RAIL_PRESENCE_COLUMNS,
     )
