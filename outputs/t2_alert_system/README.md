@@ -58,6 +58,18 @@ Materializam os resultados usados no resumo:
 
 Esses artefatos não calculam falsos positivos ou falsos negativos das regras porque a base não possui ground truth investigativo independente.
 
+### `19_rule_operational_policy.csv`
+
+Normaliza, para as 28 regras do motor principal, o tipo de threshold efetivamente implementado, o status de calibragem e a ação operacional `MONITOR`, `REVIEW` ou `ESCALATE`.
+
+Apenas R16 e M01 são classificadas como `DYNAMIC_ACTIVE`. Regras candidatas a calibragem futura continuam usando a lógica atual do protótipo.
+
+### `20_operational_policy_summary.md`
+
+Explica os critérios operacionais da matriz, inclusive a separação entre escalada e bloqueio.
+
+Nenhuma regra realiza bloqueio automático. R01, R02 e M07 apenas registram elegibilidade condicional para bloqueio após validação humana e aplicação da política/jurídico/Compliance.
+
 ## Como explicar esta etapa em 1 minuto
 
 “Na T2 eu formalizei o motor de alertas. Primeiro eu peguei os sinais que apareceram na EDA e transformei em regras objetivas. Depois separei as regras em transacionais e comportamentais por cliente-mês. Cada regra tem lógica, parâmetro, severidade, tipologia AML, exemplo na base e ação operacional sugerida. A prioridade não vem de um alerta isolado, mas da combinação de sinais. Isso deixa a fila AML mais auditável e defensável.”
