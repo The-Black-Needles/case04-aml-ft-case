@@ -36,6 +36,8 @@ Cada regra documenta lógica, parâmetros, severidade, tipologia, rail aplicáve
 
 A regra `R17`, de geo-salto físico improvável, foi adicionada posteriormente como enriquecimento contextual. Seus candidatos estão versionados, mas ela ainda não está integrada ao pipeline principal de forma reproduzível.
 
+O motor principal também possui backtesting descritivo reproduzível por código. Os artefatos medem hits, cobertura por rail, carga operacional, distribuição de acionamentos e sobreposição empírica entre regras. O backtesting usa somente a base sintética, não possui ground truth investigativo independente e não deve ser interpretado como homologação produtiva ou medição de falsos positivos/negativos. A entrada recomendada é `outputs/t2_alert_system/17_backtesting_summary.md`.
+
 ### T3 - Machine learning
 
 Foi estruturado um baseline canônico XGBoost na unidade cliente-mês:
@@ -85,7 +87,7 @@ O script preserva prompts de referência, passagem estruturada de contexto, refe
 
 1. `outputs/eda_day1/` - EDA, qualidade e coerência por rail.
 2. `outputs/t1_suspects/` - rankings, timeline, SAR e grafo de entidades.
-3. `outputs/t2_alert_system/` - catálogo de regras e candidatos de geo-salto.
+3. `outputs/t2_alert_system/` - catálogo, backtesting reproduzível, cobertura por rail, carga operacional, revisão de sobreposição e candidatos de geo-salto.
 4. `outputs/t3_ml_canonical/` - dataset canônico cliente-mês, splits, métricas, thresholds, explicabilidade, ranking de teste e gráficos reproduzíveis.
 5. `outputs/t4_agents/` - prompts, diagrama e simulação determinística.
 6. `reports/AML_FT_Case_Report.md` - relatório técnico consolidado.

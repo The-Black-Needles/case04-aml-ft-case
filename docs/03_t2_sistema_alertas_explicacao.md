@@ -50,6 +50,23 @@ Eu não tratei transação acima de R$50 mil como comunicação automática de e
 
 Também não forcei uma regra de device/IP ring por fingerprint repetido, porque os IPs e devices da base são majoritariamente únicos. Preferi usar sinais técnicos mais confiáveis dentro da base: IP anomaly, Proxy/VPN/Tor e device rooted.
 
+## Backtesting descritivo e homologação
+
+Depois da formalização do motor, eu adicionei um backtesting reproduzível para responder quatro perguntas operacionais:
+
+- quais regras mais acionam;
+- como a carga muda entre PIX, Card e Wire;
+- quantas regras tendem a disparar na mesma observação;
+- quais pares apresentam sobreposição empírica suficiente para merecer revisão.
+
+A análise também segmenta transações por `status`, mas esse campo não é tratado como ground truth. Isso é especialmente importante para Chargeback, porque o próprio status participa da lógica da R09 e criaria circularidade se fosse usado para afirmar precisão.
+
+Sem decisões investigativas independentes, eu não calculo falso positivo, falso negativo, precision ou recall das regras. O resultado é um backtesting descritivo sobre dados sintéticos, não uma homologação produtiva.
+
+Os indicadores de coocorrência também não desativam regras automaticamente. Eles geram evidência para revisão humana de redundância, conflito, cobertura e impacto operacional.
+
+A entrada recomendada é `outputs/t2_alert_system/17_backtesting_summary.md`.
+
 ## Como eu explicaria em entrevista
 
-“Na T2 eu formalizei o motor de alertas. Criei regras transacionais e regras cliente-mês, cada uma com lógica, parâmetro, exemplo na base e justificativa. A prioridade vem da combinação de sinais, não de uma regra isolada. Isso deixa o processo auditável e pronto para alimentar tanto investigação manual quanto o modelo de ML da próxima etapa.”
+“Na T2 eu formalizei o motor de alertas e depois criei um backtesting reproduzível. Além de saber qual regra dispara, eu consigo medir carga da fila, cobertura por rail e sobreposição entre regras. Como a base é sintética e não tem ground truth investigativo independente, eu não apresento falso positivo ou falso negativo como se fossem métricas validadas. Esses resultados servem para revisão e calibragem supervisionadas, não para desativação automática de regras.”

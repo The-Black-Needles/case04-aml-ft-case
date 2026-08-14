@@ -27,6 +27,8 @@ Foram formalizadas **28 regras**:
 
 Isso atende ao requisito de no mínimo 15 regras e mantém cobertura sobre as principais tipologias do case.
 
+A R17 de geo-salto é um enriquecimento suplementar e permanece fora das 28 regras do motor principal e do backtesting principal enquanto não estiver integrada ao pipeline de forma reproduzível.
+
 ## Tipologias cobertas
 
 As regras cobrem:
@@ -74,6 +76,21 @@ A base não possui campo explícito de espécie/cash físico. Por isso, a regra 
 
 A base também não favorece device/IP ring por reutilização exata, porque os fingerprints e IPs são majoritariamente únicos. Por isso, o sistema usa sinais de risco técnico como `device_rooted`, `ip_anomaly`, `Proxy`, `VPN` e `Tor`.
 
+## Backtesting descritivo reproduzível
+
+O motor principal agora possui um runner dedicado que regenera métricas de hits, cobertura por rail, carga operacional, distribuição do número de acionamentos e coocorrência entre regras.
+
+Na base sintética atual:
+
+- 28.204 de 52.000 transações acionam ao menos uma regra transacional;
+- 5.832 de 9.107 registros cliente-mês acionam ao menos uma regra mensal;
+- 120 pares de regras transacionais e 66 pares cliente-mês são avaliados por coocorrência;
+- 8 pares em cada nível aparecem como candidatos empíricos para revisão humana pelos critérios atuais.
+
+Esses números medem comportamento do motor sobre a base sintética. Não existe ground truth investigativo independente e, portanto, o backtesting não estima precision, recall, falsos positivos ou falsos negativos das regras. `status` é usado apenas para segmentação descritiva e não como validação externa.
+
+O resumo completo está em `17_backtesting_summary.md` e o contrato reproduzível em `18_backtesting_manifest.json`.
+
 ## Resultado
 
-O sistema gera uma fila AML priorizada e defensável, permitindo explicar por que uma transação ou cliente entrou na fila de investigação.
+O sistema gera uma fila AML priorizada e defensável, permitindo explicar por que uma transação ou cliente entrou na fila de investigação. A calibragem operacional continua dependente de revisão humana, capacidade de fila e feedback investigativo.

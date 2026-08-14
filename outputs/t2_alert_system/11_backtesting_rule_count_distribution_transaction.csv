@@ -1,0 +1,8 @@
+level,rule_count,observations,observation_share
+transaction,0,23796,0.457615384615
+transaction,1,15050,0.289423076923
+transaction,2,10072,0.193692307692
+transaction,3,2638,0.0507307692308
+transaction,4,400,0.00769230769231
+transaction,5,40,0.000769230769231
+transaction,6,4,7.69230769231e-05

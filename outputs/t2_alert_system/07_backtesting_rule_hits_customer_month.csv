@@ -1,0 +1,13 @@
+rule_id,rule_name,level,observations,hits,hit_rate
+M01,M01_monthly_out_of_profile_dynamic,customer_month,9107,5673,0.622927418469
+M02,M02_velocity_high_volume,customer_month,9107,66,0.00724717250467
+M03,M03_structuring_near_10k_repeated,customer_month,9107,4,0.00043922257604
+M04,M04_cashin_to_cashout_pass_through_proxy,customer_month,9107,2231,0.244976391787
+M05,M05_crossborder_concentration,customer_month,9107,814,0.0893817942242
+M06,M06_high_risk_country_repeated,customer_month,9107,18,0.00197650159218
+M07,M07_sanctions_any_period,customer_month,9107,36,0.00395300318436
+M08,M08_pep_high_volume,customer_month,9107,48,0.00527067091248
+M09,M09_high_risk_mcc_repeated,customer_month,9107,411,0.0451301196882
+M10,M10_ecommerce_no3ds_repeated,customer_month,9107,78,0.00856484023279
+M11,M11_device_ip_risk_repeated,customer_month,9107,139,0.0152629845174
+M12,M12_self_merchant_any,customer_month,9107,3,0.00032941693203

@@ -1,0 +1,4 @@
+segment,segment_value,observations,alerted_observations,alert_rate,total_rule_hits,mean_rule_hits_per_observation,max_rule_hits_per_observation
+rail,PIX,31547,16842,0.533870098583,26666,0.845278473389,5
+rail,Card,17930,10007,0.558114891244,16110,0.898494143893,6
+rail,Wire,2523,1355,0.537059056679,2156,0.854538248117,6

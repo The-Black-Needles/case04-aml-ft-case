@@ -1,0 +1,8 @@
+level,rule_count,observations,observation_share
+customer_month,0,3275,0.359613484133
+customer_month,1,2983,0.327550236082
+customer_month,2,2139,0.234874272538
+customer_month,3,595,0.065334358186
+customer_month,4,101,0.011090370045
+customer_month,5,13,0.00142747337213
+customer_month,6,1,0.00010980564401

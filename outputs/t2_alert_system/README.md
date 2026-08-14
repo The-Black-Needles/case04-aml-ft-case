@@ -16,23 +16,47 @@ Resumo executivo da T2.
 
 ### `01_alert_rules_catalog_t2.csv`
 
-Catálogo completo das regras.
+Catálogo documental com 29 entradas: as 28 regras do motor principal e a R17 como enriquecimento suplementar de geo-salto.
 
-Cada linha representa uma regra com nome, lógica, parâmetros, severidade, pontuação, tipologia, rail aplicável, exemplo na base, justificativa, ação operacional e controle de falso positivo.
+Cada linha representa uma regra com nome, lógica, parâmetros, severidade, pontuação, tipologia, rail aplicável, exemplo na base, justificativa, ação operacional e controle de falso positivo. A R17 não participa do backtesting principal enquanto não estiver integrada ao pipeline de forma reproduzível.
 
 Este é o arquivo mais importante da T2.
 
 ### `02_rule_coverage_by_typology.csv`
 
-Mostra quais tipologias AML estão cobertas pelas regras.
+Mostra a cobertura documental por tipologia e inclui a R17 suplementar.
 
-Serve para demonstrar que o sistema não olha apenas para um tipo de suspeita, mas cobre diferentes cenários: sanções, cross-border, PEP, alto valor, fora de perfil, velocity, conta de passagem, e-commerce sem 3DS, MCC de risco e outros.
+Serve para demonstrar que o sistema não olha apenas para um tipo de suspeita, mas cobre diferentes cenários: sanções, cross-border, PEP, alto valor, fora de perfil, velocity, conta de passagem, e-commerce sem 3DS, MCC de risco e outros. Para métricas reproduzíveis do motor principal, use os artefatos de backtesting abaixo.
 
 ### `03_rule_examples_t2.md`
 
 Traz exemplos de regras com casos encontrados na base.
 
 É útil para explicar que as regras não ficaram apenas no conceitual: elas foram aplicadas em cima dos dados do case.
+
+### `17_backtesting_summary.md`
+
+É a porta de entrada para o backtesting reproduzível do motor principal R01–R16 e M01–M12.
+
+Resume carga operacional, cobertura por rail, distribuição de acionamentos, segmentação descritiva por status e evidências empíricas de sobreposição entre regras.
+
+### `18_backtesting_manifest.json`
+
+Contrato legível por máquina com escopo, volumes, número de regras, número de pares analisados e limitações metodológicas.
+
+### Tabelas `06` a `16`
+
+Materializam os resultados usados no resumo:
+
+- hits por regra;
+- regra × rail;
+- presença não exclusiva de rail no cliente-mês;
+- carga operacional;
+- distribuição do número de regras acionadas;
+- carga por status e rail;
+- coocorrência e candidatos empíricos para revisão humana.
+
+Esses artefatos não calculam falsos positivos ou falsos negativos das regras porque a base não possui ground truth investigativo independente.
 
 ## Como explicar esta etapa em 1 minuto
 

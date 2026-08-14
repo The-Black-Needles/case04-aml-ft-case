@@ -1,0 +1,5 @@
+segment,segment_value,observations,alerted_observations,alert_rate,total_rule_hits,mean_rule_hits_per_observation,max_rule_hits_per_observation
+status,Confirmed,47796,25437,0.532199347226,40269,0.84251820236,6
+status,Pending,2063,1122,0.543868153175,1771,0.858458555502,5
+status,Failed,1071,575,0.536881419234,917,0.856209150327,5
+status,Chargeback,1070,1070,1,1975,1.84579439252,5

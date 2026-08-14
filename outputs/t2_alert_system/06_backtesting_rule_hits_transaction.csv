@@ -1,0 +1,17 @@
+rule_id,rule_name,level,observations,hits,hit_rate
+R01,R01_tx_sanctions_screening_hit,transaction,52000,2,3.84615384615e-05
+R02,R02_subject_on_sanctions_list,transaction,52000,184,0.00353846153846
+R03,R03_pep_crossborder_or_high_value,transaction,52000,455,0.00875
+R04,R04_wire_to_high_risk_country,transaction,52000,27,0.000519230769231
+R05,R05_crossborder_high_risk_receiver,transaction,52000,515,0.00990384615385
+R06,R06_geo_or_ip_high_risk,transaction,52000,782,0.0150384615385
+R07,R07_large_amount_50k_plus,transaction,52000,90,0.00173076923077
+R08,R08_card_ecommerce_without_3ds,transaction,52000,1054,0.0202692307692
+R09,R09_chargeback_status,transaction,52000,1070,0.0205769230769
+R10,R10_high_risk_mcc,transaction,52000,15696,0.301846153846
+R11,R11_high_risk_merchant_or_cb_ratio,transaction,52000,13784,0.265076923077
+R12,R12_self_merchant,transaction,52000,3,5.76923076923e-05
+R13,R13_ip_anomaly_or_proxy_tor_vpn,transaction,52000,3839,0.0738269230769
+R14,R14_rooted_device,transaction,52000,1562,0.0300384615385
+R15,R15_near_10k_structuring_proxy,transaction,52000,988,0.019
+R16,R16_low_income_high_single_tx,transaction,52000,4881,0.0938653846154

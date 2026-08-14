@@ -1,0 +1,79 @@
+{
+  "analysis_type": "descriptive_experimental",
+  "artifact": "t2_rule_backtesting",
+  "artifact_version": "1.0",
+  "dataset": "synthetic",
+  "limitations": {
+    "human_review_required": true,
+    "independent_ground_truth": false,
+    "production_homologation": false,
+    "rule_fp_fn_metrics_available": false,
+    "status_is_ground_truth": false
+  },
+  "operational_load": {
+    "customer_month_alerted": 5832,
+    "customer_month_observations": 9107,
+    "transaction_alerted": 28204,
+    "transaction_observations": 52000
+  },
+  "principal_rule_engine": {
+    "customer_month_rules": 12,
+    "r17_in_principal_backtest": false,
+    "total_rules": 28,
+    "transaction_rules": 16
+  },
+  "review_evidence": {
+    "automatic_redundancy_verdict": false,
+    "automatic_rule_disable": false,
+    "customer_month_candidates": 8,
+    "customer_month_pairs": 66,
+    "transaction_candidates": 8,
+    "transaction_pairs": 120
+  },
+  "tables": {
+    "06_backtesting_rule_hits_transaction.csv": {
+      "key": "rule_hits_transaction",
+      "rows": 16
+    },
+    "07_backtesting_rule_hits_customer_month.csv": {
+      "key": "rule_hits_customer_month",
+      "rows": 12
+    },
+    "08_backtesting_rule_rail_transaction.csv": {
+      "key": "rule_rail_transaction",
+      "rows": 48
+    },
+    "09_backtesting_rule_rail_presence_customer_month.csv": {
+      "key": "rule_rail_presence_customer_month",
+      "rows": 36
+    },
+    "10_backtesting_alert_load.csv": {
+      "key": "alert_load",
+      "rows": 2
+    },
+    "11_backtesting_rule_count_distribution_transaction.csv": {
+      "key": "rule_count_distribution_transaction",
+      "rows": 7
+    },
+    "12_backtesting_rule_count_distribution_customer_month.csv": {
+      "key": "rule_count_distribution_customer_month",
+      "rows": 7
+    },
+    "13_backtesting_transaction_load_by_status.csv": {
+      "key": "transaction_load_by_status",
+      "rows": 4
+    },
+    "14_backtesting_transaction_load_by_rail.csv": {
+      "key": "transaction_load_by_rail",
+      "rows": 3
+    },
+    "15_backtesting_pairwise_review_transaction.csv": {
+      "key": "pairwise_review_transaction",
+      "rows": 120
+    },
+    "16_backtesting_pairwise_review_customer_month.csv": {
+      "key": "pairwise_review_customer_month",
+      "rows": 66
+    }
+  }
+}
