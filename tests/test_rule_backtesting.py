@@ -1034,5 +1034,219 @@ class RuleBacktestingTests(
             )
 
 
+
+    def test_pairwise_review_flags_empirical_overlap(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "R01_alpha": [
+                    True,
+                    True,
+                    False,
+                    False,
+                ],
+                "R02_beta": [
+                    True,
+                    True,
+                    True,
+                    False,
+                ],
+            }
+        )
+
+        result = (
+            BACKTESTING
+            .pairwise_rule_review_evidence(
+                frame,
+                (
+                    "R01_alpha",
+                    "R02_beta",
+                ),
+                level="transaction",
+            )
+        )
+
+        row = result.iloc[0]
+
+        self.assertEqual(
+            tuple(result.columns),
+            BACKTESTING.PAIRWISE_REVIEW_COLUMNS,
+        )
+        self.assertTrue(
+            bool(
+                row[
+                    "high_jaccard_candidate"
+                ]
+            )
+        )
+        self.assertTrue(
+            bool(
+                row[
+                    "high_overlap_candidate"
+                ]
+            )
+        )
+        self.assertTrue(
+            bool(
+                row[
+                    "a_empirically_contained_in_b"
+                ]
+            )
+        )
+        self.assertFalse(
+            bool(
+                row[
+                    "b_empirically_contained_in_a"
+                ]
+            )
+        )
+        self.assertTrue(
+            bool(
+                row[
+                    "review_required"
+                ]
+            )
+        )
+
+    def test_zero_hit_rule_is_not_empirically_contained(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "R01_zero": [
+                    False,
+                    False,
+                ],
+                "R02_beta": [
+                    True,
+                    False,
+                ],
+            }
+        )
+
+        result = (
+            BACKTESTING
+            .pairwise_rule_review_evidence(
+                frame,
+                (
+                    "R01_zero",
+                    "R02_beta",
+                ),
+                level="transaction",
+                jaccard_threshold=1.0,
+                overlap_threshold=1.0,
+            )
+        )
+
+        row = result.iloc[0]
+
+        self.assertFalse(
+            bool(
+                row[
+                    "a_empirically_contained_in_b"
+                ]
+            )
+        )
+
+    def test_pairwise_review_custom_thresholds_can_suppress_flag(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "R01_alpha": [
+                    True,
+                    False,
+                    False,
+                ],
+                "R02_beta": [
+                    True,
+                    True,
+                    False,
+                ],
+            }
+        )
+
+        result = (
+            BACKTESTING
+            .pairwise_rule_review_evidence(
+                frame,
+                (
+                    "R01_alpha",
+                    "R02_beta",
+                ),
+                level="transaction",
+                jaccard_threshold=0.75,
+                overlap_threshold=1.0,
+            )
+        )
+
+        row = result.iloc[0]
+
+        self.assertFalse(
+            bool(
+                row[
+                    "high_jaccard_candidate"
+                ]
+            )
+        )
+
+    def test_pairwise_review_rejects_invalid_jaccard_threshold(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "R01_alpha": [
+                    True,
+                ],
+                "R02_beta": [
+                    True,
+                ],
+            }
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "jaccard_threshold deve estar entre 0 e 1",
+        ):
+            BACKTESTING.pairwise_rule_review_evidence(
+                frame,
+                (
+                    "R01_alpha",
+                    "R02_beta",
+                ),
+                level="transaction",
+                jaccard_threshold=1.01,
+            )
+
+    def test_pairwise_review_rejects_boolean_threshold(
+        self,
+    ) -> None:
+        frame = pd.DataFrame(
+            {
+                "R01_alpha": [
+                    True,
+                ],
+                "R02_beta": [
+                    True,
+                ],
+            }
+        )
+
+        with self.assertRaisesRegex(
+            TypeError,
+            "overlap_threshold deve ser numérico",
+        ):
+            BACKTESTING.pairwise_rule_review_evidence(
+                frame,
+                (
+                    "R01_alpha",
+                    "R02_beta",
+                ),
+                level="transaction",
+                overlap_threshold=True,
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

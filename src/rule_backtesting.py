@@ -110,6 +110,15 @@ TRANSACTION_SEGMENT_LOAD_COLUMNS = (
     "max_rule_hits_per_observation",
 )
 
+PAIRWISE_REVIEW_COLUMNS = (
+    *COOCCURRENCE_COLUMNS,
+    "high_jaccard_candidate",
+    "high_overlap_candidate",
+    "a_empirically_contained_in_b",
+    "b_empirically_contained_in_a",
+    "review_required",
+)
+
 
 def _rule_id(
     rule_name: str,
@@ -954,3 +963,137 @@ def transaction_alert_load_by_status(
         rows,
         columns=TRANSACTION_SEGMENT_LOAD_COLUMNS,
     )
+
+def _validate_probability_threshold(
+    value: float,
+    *,
+    name: str,
+) -> float:
+    if isinstance(
+        value,
+        bool,
+    ) or not isinstance(
+        value,
+        (
+            int,
+            float,
+        ),
+    ):
+        raise TypeError(
+            f"{name} deve ser numérico."
+        )
+
+    numeric = float(
+        value
+    )
+
+    if not 0.0 <= numeric <= 1.0:
+        raise ValueError(
+            f"{name} deve estar entre 0 e 1."
+        )
+
+    return numeric
+
+
+def pairwise_rule_review_evidence(
+    frame: pd.DataFrame,
+    rule_columns: Sequence[str],
+    *,
+    level: str,
+    jaccard_threshold: float = 0.40,
+    overlap_threshold: float = 0.90,
+) -> pd.DataFrame:
+    """Sinaliza sobreposição empírica para revisão humana.
+
+    Os indicadores são evidências descritivas e não constituem
+    veredito automático de redundância, conflito ou desativação.
+    """
+
+    jaccard_limit = _validate_probability_threshold(
+        jaccard_threshold,
+        name="jaccard_threshold",
+    )
+
+    overlap_limit = _validate_probability_threshold(
+        overlap_threshold,
+        name="overlap_threshold",
+    )
+
+    pairs = pairwise_rule_cooccurrence(
+        frame,
+        rule_columns,
+        level=level,
+    )
+
+    if pairs.empty:
+        return pd.DataFrame(
+            columns=PAIRWISE_REVIEW_COLUMNS,
+        )
+
+    result = pairs.copy()
+
+    result[
+        "high_jaccard_candidate"
+    ] = result[
+        "jaccard"
+    ].ge(
+        jaccard_limit
+    )
+
+    result[
+        "high_overlap_candidate"
+    ] = result[
+        "overlap_coefficient"
+    ].ge(
+        overlap_limit
+    )
+
+    result[
+        "a_empirically_contained_in_b"
+    ] = (
+        result[
+            "hits_a"
+        ].gt(0)
+        & result[
+            "both_hits"
+        ].eq(
+            result[
+                "hits_a"
+            ]
+        )
+    )
+
+    result[
+        "b_empirically_contained_in_a"
+    ] = (
+        result[
+            "hits_b"
+        ].gt(0)
+        & result[
+            "both_hits"
+        ].eq(
+            result[
+                "hits_b"
+            ]
+        )
+    )
+
+    result[
+        "review_required"
+    ] = result[
+        [
+            "high_jaccard_candidate",
+            "high_overlap_candidate",
+            "a_empirically_contained_in_b",
+            "b_empirically_contained_in_a",
+        ]
+    ].any(
+        axis=1
+    )
+
+    return result.loc[
+        :,
+        list(
+            PAIRWISE_REVIEW_COLUMNS
+        ),
+    ]
